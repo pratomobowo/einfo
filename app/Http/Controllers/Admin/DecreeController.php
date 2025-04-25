@@ -40,6 +40,7 @@ class DecreeController extends Controller
             'deskripsi' => 'nullable|string',
             'file_sk' => 'required|file|mimes:pdf,doc,docx|max:10240',
             'tanggal_terbit' => 'required|date',
+            'ditandatangani_oleh' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('file_sk')) {
@@ -81,6 +82,7 @@ class DecreeController extends Controller
             'deskripsi' => 'nullable|string',
             'file_sk' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             'tanggal_terbit' => 'required|date',
+            'ditandatangani_oleh' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('file_sk')) {

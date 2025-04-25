@@ -18,6 +18,7 @@ class Decree extends Model
         'deskripsi',
         'file_sk',
         'tanggal_terbit',
+        'ditandatangani_oleh',
     ];
 
     protected $casts = [

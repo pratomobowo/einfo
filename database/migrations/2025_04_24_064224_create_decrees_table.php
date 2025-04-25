@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->string('file_sk')->nullable();
             $table->date('tanggal_terbit');
+            $table->string('ditandatangani_oleh')->nullable();
             $table->timestamps();
         });
     }
