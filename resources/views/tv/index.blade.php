@@ -201,12 +201,22 @@
             color: #334155;
             font-size: 1rem;
             margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+            max-height: 2.8rem;
         }
 
         .card-subtitle {
             color: #64748b;
             font-size: 0.9rem;
             margin-bottom: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .card-date,
@@ -220,6 +230,12 @@
             background: #f8f9fa;
             border-radius: 0.25rem;
             margin-bottom: 0.5rem;
+        }
+
+        .card-location span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .card-icon {
@@ -281,6 +297,10 @@
             font-weight: 600;
             font-size: 1.1rem;
             margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: calc(100% - 2rem);
         }
 
         .modal-close {
@@ -313,6 +333,8 @@
         .section-content {
             color: #64748b;
             font-size: 0.9rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .info-item {
@@ -320,6 +342,12 @@
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 0.5rem;
+            word-break: break-word;
+        }
+
+        .info-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-right {
@@ -720,8 +748,8 @@
                 <div class="modal-section">
                     <div class="section-title">Rektor</div>
                     <div class="section-content">
-                        <div x-text="selectedActivity?.official.name"></div>
-                        <div x-text="selectedActivity?.official.position"></div>
+                        <div class="overflow-hidden text-ellipsis" x-text="selectedActivity?.official.name"></div>
+                        <div class="overflow-hidden text-ellipsis" x-text="selectedActivity?.official.position"></div>
                     </div>
                 </div>
                 
@@ -729,31 +757,31 @@
                     <div class="section-title">Waktu & Lokasi</div>
                     <div class="section-content">
                         <div class="info-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
                             </svg>
-                            <span x-text="new Date(selectedActivity?.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })"></span>
+                            <span class="break-words overflow-hidden text-ellipsis" x-text="new Date(selectedActivity?.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })"></span>
                         </div>
                         <div class="info-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                             </svg>
-                            <span x-text="selectedActivity?.formatted_time"></span>
+                            <span class="break-words" x-text="selectedActivity?.formatted_time"></span>
                         </div>
                         <div class="info-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                             </svg>
-                            <span x-text="selectedActivity?.location"></span>
+                            <span class="break-words" x-text="selectedActivity?.location"></span>
                         </div>
                         <div class="info-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0v3H7V4h6zm-5 7a1 1 0 100-2 1 1 0 000 2zm0 3a1 1 0 100-2 1 1 0 000 2zm5-3a1 1 0 100-2 1 1 0 000 2zm0 3a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
                             </svg>
                             <span class="flex items-center">
                                 <span class="mr-1">Kategori:</span>
                                 <span class="px-2 py-0.5 text-xs rounded-full" 
-                                      :class="selectedActivity?.kategori_kegiatan === 'internal' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'">
+                                    :class="selectedActivity?.kategori_kegiatan === 'internal' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'">
                                     <span x-text="selectedActivity?.kategori_kegiatan === 'internal' ? 'Internal' : 'Eksternal'"></span>
                                 </span>
                             </span>
@@ -763,7 +791,7 @@
                 
                 <div class="modal-section">
                     <div class="section-title">Deskripsi Kegiatan</div>
-                    <div class="section-content" x-text="selectedActivity?.description || 'Tidak ada deskripsi'"></div>
+                    <div class="section-content whitespace-pre-line break-words" x-text="selectedActivity?.description || 'Tidak ada deskripsi'"></div>
                 </div>
                 
                 <!-- Tambahkan bagian untuk surat tugas -->
