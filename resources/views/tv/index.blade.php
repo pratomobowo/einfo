@@ -326,8 +326,13 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            flex-wrap: wrap;
             justify-content: center;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .auth-button {
@@ -340,9 +345,10 @@
             font-weight: 500;
             transition: all 0.15s ease;
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 0.375rem;
+            white-space: nowrap;
         }
 
         .auth-button:hover {
@@ -407,6 +413,13 @@
                 gap: 0.5rem;
             }
             
+            .auth-buttons {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
             .tab-button {
                 padding: 0.6rem 0.75rem;
                 font-size: 0.85rem;
@@ -445,7 +458,7 @@
                     <a href="{{ route('admin.dashboard') }}" class="auth-button primary">
                         {{ __('Admin Panel') }}
                     </a>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="auth-button">
                             {{ __('Logout') }}
