@@ -7,7 +7,7 @@
                 <h1 class="text-2xl font-semibold text-gray-900">{{ __('Detail Aktivitas Log') }}</h1>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Informasi lengkap aktivitas yang terjadi') }}</p>
             </div>
-            <a href="{{ route('admin.activity-logs.index') }}" class="px-4 py-2 bg-gray-200 rounded-md text-gray-700 text-sm flex items-center hover:bg-gray-300">
+            <a href="{{ route('admin.activity_logs.index') }}" class="px-4 py-2 bg-gray-200 rounded-md text-gray-700 text-sm flex items-center hover:bg-gray-300">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>

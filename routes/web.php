@@ -31,8 +31,8 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     Route::resource('users', UserController::class)->except(['index']);
     
     // Activity Logs routes
-    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
-    Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
+    Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity_logs.show');
     
     // Tambah routes untuk activities yang menggunakan layout admin
     Route::get('/activities/create', [AdminController::class, 'createActivity'])->name('activities.create');
