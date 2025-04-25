@@ -426,7 +426,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Calendar Section -->
+    <div class="mt-8 overflow-hidden bg-white shadow-md rounded-lg">
+        <div class="p-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Kalender Kegiatan</h3>
+            <div id="calendar"></div>
+        </div>
+    </div>
 </div>
+
+@push('scripts')
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: '{{ route("admin.calendar.events") }}',
+                eventClick: function(info) {
+                    window.location.href = info.event.url;
+                }
+            });
+            calendar.render();
+        });
+    </script>
+@endpush
 
 <style>
     [x-cloak] {

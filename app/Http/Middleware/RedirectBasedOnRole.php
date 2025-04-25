@@ -23,13 +23,9 @@ class RedirectBasedOnRole
         
         $user = Auth::user();
         
-        // Mengarahkan pengguna sesuai peran
+        // Mengarahkan semua pengguna ke admin.dashboard
         if ($request->is('dashboard') || $request->is('/')) {
-            if ($user->isSuperAdmin()) {
-                return redirect()->route('dashboard');
-            } elseif ($user->isAdminSekretariat()) {
-                return redirect()->route('admin.dashboard');
-            }
+            return redirect()->route('admin.dashboard');
         }
         
         return $next($request);
