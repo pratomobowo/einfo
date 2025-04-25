@@ -15,6 +15,12 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, LogsActivity;
 
     /**
+     * Role constants
+     */
+    const ROLE_SUPER_ADMIN = 'super_admin';
+    const ROLE_ADMIN_SEKRETARIAT = 'admin_sekretariat';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -24,6 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'role',
     ];
 
     /**
@@ -62,5 +69,33 @@ class User extends Authenticatable
             'created_at',
             'updated_at',
         ];
+    }
+
+    /**
+     * Check if user is a super admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
+    /**
+     * Check if user is an admin sekretariat
+     */
+    public function isAdminSekretariat(): bool
+    {
+        return $this->role === self::ROLE_ADMIN_SEKRETARIAT;
+    }
+
+    /**
+     * Get the role name in human-readable format
+     */
+    public function getRoleName(): string
+    {
+        return match($this->role) {
+            self::ROLE_SUPER_ADMIN => 'Super Admin',
+            self::ROLE_ADMIN_SEKRETARIAT => 'Admin Sekretariat',
+            default => 'User',
+        };
     }
 }
