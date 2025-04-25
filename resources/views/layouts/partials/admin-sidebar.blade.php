@@ -49,6 +49,14 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.activity-logs.index') }}" class="{{ request()->routeIs('admin.activity-logs*') ? 'bg-blue-800 text-white' : 'text-white/90 hover:text-white hover:bg-blue-800/80' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-150">
+                            <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('admin.activity-logs*') ? 'text-white' : 'text-blue-100 group-hover:text-white' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                            Aktivitas Log
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.documentation') }}" class="{{ request()->routeIs('admin.documentation*') ? 'bg-blue-800 text-white' : 'text-white/90 hover:text-white hover:bg-blue-800/80' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-150">
                             <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('admin.documentation*') ? 'text-white' : 'text-blue-100 group-hover:text-white' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />

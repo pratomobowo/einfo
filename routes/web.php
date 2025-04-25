@@ -7,6 +7,7 @@ use App\Http\Controllers\OfficialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TvDisplayController;
 use App\Http\Controllers\Admin\DecreeController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,10 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     Route::get('/officials', [AdminController::class, 'officials'])->name('officials');
     Route::get('/users', [AdminController::class, 'users'])->name('users');
     Route::get('/documentation', [AdminController::class, 'documentation'])->name('documentation');
+    
+    // Activity Logs routes
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
     
     // Tambah routes untuk activities yang menggunakan layout admin
     Route::get('/activities/create', [AdminController::class, 'createActivity'])->name('activities.create');
