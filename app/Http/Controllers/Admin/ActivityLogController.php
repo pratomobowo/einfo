@@ -9,10 +9,24 @@ use Illuminate\Http\Request;
 class ActivityLogController extends Controller
 {
     /**
+     * Constructor to add role check
+     */
+    public function __construct()
+    {
+        // Laravel 10+ doesn't support middleware registration in Controller constructor
+        // Will implement checks in individual methods
+    }
+
+    /**
      * Display a listing of activity logs.
      */
     public function index(Request $request)
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+
         $query = ActivityLog::with('user')->latest();
 
         // Filter by action type if provided
@@ -57,6 +71,11 @@ class ActivityLogController extends Controller
      */
     public function show(ActivityLog $activityLog)
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         return view('admin.activity-logs.show', compact('activityLog'));
     }
 }

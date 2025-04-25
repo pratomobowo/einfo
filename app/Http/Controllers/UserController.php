@@ -10,10 +10,24 @@ use Illuminate\Validation\Rules\Password;
 class UserController extends Controller
 {
     /**
+     * Constructor to add role check
+     */
+    public function __construct()
+    {
+        // Laravel 10+ doesn't support middleware registration in Controller constructor
+        // Will implement checks in individual methods
+    }
+
+    /**
      * Display a listing of the users.
      */
     public function index()
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         $users = User::latest()->paginate(10);
         return view('admin.users.index', compact('users'));
     }
@@ -23,6 +37,11 @@ class UserController extends Controller
      */
     public function create()
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         return view('admin.users.create');
     }
 
@@ -31,6 +50,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -55,6 +79,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         return view('admin.users.edit', compact('user'));
     }
 
@@ -63,6 +92,11 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
@@ -92,6 +126,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Check if user is a super admin
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         // Mencegah menghapus diri sendiri
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users')

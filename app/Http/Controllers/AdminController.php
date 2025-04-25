@@ -76,8 +76,15 @@ class AdminController extends Controller
         return view('admin.officials.index', compact('officials'));
     }
 
+    /**
+     * Display the users page.
+     */
     public function users()
     {
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
         $users = User::latest()->paginate(10);
         return view('admin.users.index', compact('users'));
     }

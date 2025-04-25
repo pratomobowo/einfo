@@ -33,8 +33,11 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/activities', [AdminController::class, 'activities'])->name('activities');
     Route::get('/officials', [AdminController::class, 'officials'])->name('officials');
-    Route::get('/users', [AdminController::class, 'users'])->name('users');
     Route::get('/documentation', [AdminController::class, 'documentation'])->name('documentation');
+    
+    // User management routes
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::resource('users', UserController::class)->except(['index']);
     
     // Activity Logs routes
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
@@ -54,9 +57,6 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     
     // Resource route untuk decrees (SK)
     Route::resource('decrees', DecreeController::class);
-    
-    // Resource route untuk users
-    Route::resource('users', UserController::class)->except(['index']);
 });
 
 // Profile routes

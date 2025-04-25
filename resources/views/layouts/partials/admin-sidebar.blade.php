@@ -40,6 +40,7 @@
                             Rektor
                         </a>
                     </li>
+                    @if(auth()->user()->isSuperAdmin())
                     <li>
                         <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users*') ? 'bg-blue-800 text-white' : 'text-white/90 hover:text-white hover:bg-blue-800/80' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-150">
                             <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('admin.users*') ? 'text-white' : 'text-blue-100 group-hover:text-white' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -56,6 +57,7 @@
                             Aktivitas Log
                         </a>
                     </li>
+                    @endif
                     <li>
                         <a href="{{ route('admin.documentation') }}" class="{{ request()->routeIs('admin.documentation*') ? 'bg-blue-800 text-white' : 'text-white/90 hover:text-white hover:bg-blue-800/80' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-150">
                             <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('admin.documentation*') ? 'text-white' : 'text-blue-100 group-hover:text-white' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">

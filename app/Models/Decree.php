@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Decree extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'nomor_sk',
@@ -48,5 +49,16 @@ class Decree extends Model
     public function isRektorat()
     {
         return $this->jenis_sk === self::JENIS_REKTORAT;
+    }
+
+    /**
+     * Get the attributes that should be excluded from the activity log.
+     */
+    public function getActivityLogExcludedAttributes(): array
+    {
+        return [
+            'created_at',
+            'updated_at',
+        ];
     }
 }
