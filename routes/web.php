@@ -25,7 +25,6 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     Route::get('/activities', [AdminController::class, 'activities'])->name('activities');
     Route::get('/officials', [AdminController::class, 'officials'])->name('officials');
     Route::get('/documentation', [AdminController::class, 'documentation'])->name('documentation');
-    Route::get('/calendar/events', [AdminController::class, 'getCalendarEvents'])->name('calendar.events');
     
     // User management routes
     Route::get('/users', [AdminController::class, 'users'])->name('users');

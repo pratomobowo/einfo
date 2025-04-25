@@ -434,6 +434,41 @@
                 padding: 1rem;
             }
         }
+
+        /* Status badges styles for the homepage */
+        .status-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 0.1rem 0.5rem;
+            margin-left: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: -0.2px;
+        }
+
+        .status-ongoing {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .status-upcoming {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+        }
+
+        /* Adjust card-date to accommodate status */
+        .card-date {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-date > svg {
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body x-data="{ 
@@ -541,6 +576,86 @@
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                         </svg>
                         <span>{{ $activity->formatted_time }}</span>
+                        
+                        @php
+                        try {
+                            // Get current time
+                            $now = \Carbon\Carbon::now();
+                            
+                            // Parse activity date (just the date part, no time)
+                            $activityDate = \Carbon\Carbon::parse($activity->date)->startOfDay();
+                            
+                            // Get time from activity
+                            $timeStr = $activity->formatted_time;
+                            
+                            // Default start and end times
+                            $startTime = null;
+                            $endTime = null;
+                            
+                            // Parse the time string - looking for patterns like "09:00 - 10:00"
+                            if (is_string($timeStr) && strpos($timeStr, '-') !== false) {
+                                $timeParts = explode('-', $timeStr);
+                                $startTimeStr = trim($timeParts[0]);
+                                $endTimeStr = isset($timeParts[1]) ? trim($timeParts[1]) : null;
+                                
+                                // Create the full datetime by combining activity date with time
+                                if (!empty($startTimeStr)) {
+                                    try {
+                                        $startTime = \Carbon\Carbon::parse($activityDate->format('Y-m-d') . ' ' . $startTimeStr);
+                                        
+                                        if (!empty($endTimeStr)) {
+                                            $endTime = \Carbon\Carbon::parse($activityDate->format('Y-m-d') . ' ' . $endTimeStr);
+                                        } else {
+                                            $endTime = (clone $startTime)->addHour();
+                                        }
+                                    } catch (\Exception $e) {
+                                        // If specific parsing fails, use default times
+                                        $startTime = $activityDate->copy()->addHours(8);  // 8 AM
+                                        $endTime = $activityDate->copy()->addHours(9);    // 9 AM
+                                    }
+                                }
+                            } else {
+                                // Single time format, like "09:00"
+                                try {
+                                    $startTime = \Carbon\Carbon::parse($activityDate->format('Y-m-d') . ' ' . $timeStr);
+                                    $endTime = (clone $startTime)->addHour();
+                                } catch (\Exception $e) {
+                                    // If specific parsing fails, use default times
+                                    $startTime = $activityDate->copy()->addHours(8);  // 8 AM
+                                    $endTime = $activityDate->copy()->addHours(9);    // 9 AM
+                                }
+                            }
+                            
+                            // If we still don't have valid times, use defaults
+                            if (!$startTime) {
+                                $startTime = $activityDate->copy()->addHours(8);  // 8 AM
+                                $endTime = $activityDate->copy()->addHours(9);    // 9 AM
+                            }
+                            
+                            // Determine status
+                            $status = '';
+                            $statusClass = '';
+                            
+                            // Simple comparisons for status
+                            if ($now->lt($startTime)) {
+                                // Activity is in the future
+                                $status = 'AKAN DATANG';
+                                $statusClass = 'status-upcoming';
+                            } elseif ($now->between($startTime, $endTime)) {
+                                // Activity is currently happening
+                                $status = 'BERLANGSUNG';
+                                $statusClass = 'status-ongoing';
+                            }
+                        } catch (\Exception $e) {
+                            // Handle any unexpected errors
+                            $status = '';
+                            $statusClass = '';
+                        }
+                        @endphp
+                        
+                        @if($status)
+                            <span class="status-badge {{ $statusClass }}">{{ $status }}</span>
+                        @endif
                     </div>
                     
                     <div class="card-location">
