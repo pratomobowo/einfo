@@ -10,6 +10,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
+        [x-cloak] { display: none !important; }
+        
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
@@ -497,11 +499,160 @@
         .card-date > svg {
             flex-shrink: 0;
         }
+
+        /* Add new style for date-time container */
+        .date-time-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .date-time-container .card-date {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Adjust info-item layout in modal */
+        .date-time-info {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .date-time-info .info-item {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Date and Time Container Styles */
+        .date-time-container, .date-time-info {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .modal-date-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 15px;
+        }
+
+        /* Status badges */
+        .status-badge {
+            margin-left: 8px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-live {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-upcoming {
+            background-color: #e0f2fe;
+            color: #075985;
+        }
+
+        .status-finished {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        /* Card buttons container */
+        .card-buttons-container {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+        
+        .card-button {
+            flex: 1;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.6rem 0;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: auto;
+            font-size: 0.9rem;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .card-button:hover {
+            background: #1d4ed8;
+        }
+        
+        .gcal-button {
+            background: #34a853;
+        }
+        
+        .gcal-button:hover {
+            background: #2d9144;
+        }
+
+        /* Button styles */
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+        
+        .btn {
+            flex: 1;
+            border: none;
+            padding: 0.5rem 0;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.8rem;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .btn-gcal {
+            background-color: #ea4335;
+            color: white;
+        }
+        
+        .btn-gcal:hover {
+            background-color: #d33426;
+        }
     </style>
 </head>
 <body x-data="{ 
     showModal: false, 
-    selectedActivity: null
+    selectedActivity: null,
+    activities: @js($activities),
+    openModal(activityId) {
+        this.selectedActivity = this.activities.find(a => a.id === activityId);
+        this.showModal = true;
+    }
 }">
     <!-- Header -->
     <header class="header">
@@ -521,18 +672,18 @@
                     <a href="{{ route('admin.dashboard') }}" class="auth-button primary">
                         {{ __('Admin Panel') }}
                     </a>
-                    <form method="POST" action="{{ route('logout') }}" class="m-0">
-                        @csrf
-                        <button type="submit" class="auth-button">
+                <form method="POST" action="{{ route('logout') }}" class="m-0">
+                    @csrf
+                    <button type="submit" class="auth-button">
                             {{ __('Logout') }}
-                        </button>
-                    </form>
+                    </button>
+                </form>
                 </div>
             @else
                 <div class="auth-buttons">
                     <a href="{{ route('login') }}" class="auth-button">
                         {{ __('Login') }}
-                    </a>
+                </a>
                 </div>
             @endauth
         </div>
@@ -592,98 +743,80 @@
                     <h3 class="card-title">{{ $activity->title }}</h3>
                     <p class="card-subtitle">{{ $activity->official->name }} ({{ $activity->official->position }})</p>
                     
-                    <div class="card-date">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-                        </svg>
-                        <span>{{ \Carbon\Carbon::parse($activity->date)->format('d F Y') }}</span>
-                    </div>
-                    
-                    <div class="card-date">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-                        </svg>
-                        <span>{{ $activity->formatted_time }}</span>
+                    <div class="date-time-container">
+                        <div class="card-date">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                            </svg>
+                            <span>{{ \Carbon\Carbon::parse($activity->date)->format('d F Y') }}</span>
+                        </div>
                         
-                        @php
-                        try {
-                            // Get current time
-                            $now = \Carbon\Carbon::now();
+                        <div class="card-date">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                            </svg>
+                            <span>{{ $activity->formatted_time }}</span>
                             
-                            // Parse activity date (just the date part, no time)
-                            $activityDate = \Carbon\Carbon::parse($activity->date)->startOfDay();
-                            
-                            // Get time from activity
-                            $timeStr = $activity->formatted_time;
-                            
-                            // Default start and end times
-                            $startTime = null;
-                            $endTime = null;
-                            
-                            // Parse the time string - looking for patterns like "09:00 - 10:00"
-                            if (is_string($timeStr) && strpos($timeStr, '-') !== false) {
-                                $timeParts = explode('-', $timeStr);
-                                $startTimeStr = trim($timeParts[0]);
-                                $endTimeStr = isset($timeParts[1]) ? trim($timeParts[1]) : null;
+                            @php
+                            try {
+                                // Get current time
+                                $now = \Carbon\Carbon::now();
                                 
-                                // Create the full datetime by combining activity date with time
-                                if (!empty($startTimeStr)) {
-                                    try {
-                                        $startTime = \Carbon\Carbon::parse($activityDate->format('Y-m-d') . ' ' . $startTimeStr);
-                                        
-                                        if (!empty($endTimeStr)) {
-                                            $endTime = \Carbon\Carbon::parse($activityDate->format('Y-m-d') . ' ' . $endTimeStr);
+                                // Parse activity start time
+                                $startTime = $activity->start_time;
+                                $endTime = $activity->end_time;
+                                
+                                // Skip if no start time
+                                if($startTime) {
+                                    $startDate = \Carbon\Carbon::parse("{$activity->date} {$startTime}");
+                                    
+                                    // Calculate status
+                                    $status = '';
+                                    $statusClass = '';
+                                    
+                                    // If activity is today
+                                    if($startDate->isToday()) {
+                                        // If current time is within start_time and end_time
+                                        if($endTime) {
+                                            $endDate = \Carbon\Carbon::parse("{$activity->date} {$endTime}");
+                                            
+                                            if($now->between($startDate, $endDate)) {
+                                                $status = 'Sedang Berlangsung';
+                                                $statusClass = 'status-live';
+                                            } elseif($now->lt($startDate)) {
+                                                $status = 'Akan Datang';
+                                                $statusClass = 'status-upcoming';
+                                            } elseif($now->gt($endDate)) {
+                                                $status = 'Selesai';
+                                                $statusClass = 'status-finished';
+                                            }
                                         } else {
-                                            $endTime = (clone $startTime)->addHour();
+                                            // No end time specified
+                                            if($now->gte($startDate)) {
+                                                $status = 'Sedang Berlangsung';
+                                                $statusClass = 'status-live';
+                                            } else {
+                                                $status = 'Akan Datang';
+                                                $statusClass = 'status-upcoming';
+                                            }
                                         }
-                                    } catch (\Exception $e) {
-                                        // If specific parsing fails, use default times
-                                        $startTime = $activityDate->copy()->addHours(8);  // 8 AM
-                                        $endTime = $activityDate->copy()->addHours(9);    // 9 AM
+                                    } elseif($startDate->isPast()) {
+                                        $status = 'Selesai';
+                                        $statusClass = 'status-finished';
+                                    } elseif($startDate->isFuture()) {
+                                        $status = 'Akan Datang';
+                                        $statusClass = 'status-upcoming';
                                     }
                                 }
-                            } else {
-                                // Single time format, like "09:00"
-                                try {
-                                    $startTime = \Carbon\Carbon::parse($activityDate->format('Y-m-d') . ' ' . $timeStr);
-                                    $endTime = (clone $startTime)->addHour();
-                                } catch (\Exception $e) {
-                                    // If specific parsing fails, use default times
-                                    $startTime = $activityDate->copy()->addHours(8);  // 8 AM
-                                    $endTime = $activityDate->copy()->addHours(9);    // 9 AM
-                                }
+                            } catch(\Exception $e) {
+                                // Ignore errors
                             }
+                            @endphp
                             
-                            // If we still don't have valid times, use defaults
-                            if (!$startTime) {
-                                $startTime = $activityDate->copy()->addHours(8);  // 8 AM
-                                $endTime = $activityDate->copy()->addHours(9);    // 9 AM
-                            }
-                            
-                            // Determine status
-                            $status = '';
-                            $statusClass = '';
-                            
-                            // Simple comparisons for status
-                            if ($now->lt($startTime)) {
-                                // Activity is in the future
-                                $status = 'AKAN DATANG';
-                                $statusClass = 'status-upcoming';
-                            } elseif ($now->between($startTime, $endTime)) {
-                                // Activity is currently happening
-                                $status = 'BERLANGSUNG';
-                                $statusClass = 'status-ongoing';
-                            }
-                        } catch (\Exception $e) {
-                            // Handle any unexpected errors
-                            $status = '';
-                            $statusClass = '';
-                        }
-                        @endphp
-                        
-                        @if($status)
-                            <span class="status-badge {{ $statusClass }}">{{ $status }}</span>
-                        @endif
+                            @if(isset($status) && !empty($status))
+                                <span class="status-badge {{ $statusClass }}">{{ $status }}</span>
+                            @endif
+                        </div>
                     </div>
                     
                     <div class="card-location">
@@ -705,11 +838,36 @@
                         </span>
                     </div>
                     
-                    <button 
-                        @click="selectedActivity = JSON.parse('{{ $activity->toJson() }}'); showModal = true" 
-                        class="card-button">
-                        Lihat Detail
-                    </button>
+                    @if($activity->creator)
+                    <div class="card-location">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="flex items-center">
+                            <span class="mr-1">Dibuat oleh:</span>
+                            <span class="text-xs">{{ $activity->creator->name }}</span>
+                        </span>
+                    </div>
+                    @endif
+                    
+                    <div class="button-group">
+                        <button 
+                            @click="openModal({{ $activity->id }})" 
+                            class="btn btn-primary">
+                            Detail
+                        </button>
+                        
+                        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ urlencode($activity->title) }}&dates={{ \Carbon\Carbon::parse($activity->date)->format('Ymd') }}T{{ $activity->start_time ? \Carbon\Carbon::parse($activity->start_time)->format('His') : '000000' }}/{{ \Carbon\Carbon::parse($activity->date)->format('Ymd') }}T{{ $activity->end_time ? \Carbon\Carbon::parse($activity->end_time)->format('His') : '235959' }}&details={{ urlencode($activity->description ?? '') }}&location={{ urlencode($activity->location ?? '') }}&sf=true&output=xml"
+                            target="_blank"
+                            class="btn btn-gcal">
+                            <span class="flex items-center justify-center">
+                                <svg class="h-4 w-4 mr-1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a6.033 6.033 0 110-12.064c1.498 0 2.866.549 3.921 1.453l2.814-2.814A9.969 9.969 0 0012.545 2C7.021 2 2.543 6.477 2.543 12s4.478 10 10.002 10c8.396 0 10.249-7.85 9.426-11.748l-9.426-.013z" fill="white"/>
+                                </svg>
+                                + Calendar
+                            </span>
+                        </a>
+                    </div>
                 </div>
             </div>
             @endforeach
@@ -719,6 +877,7 @@
 
     <!-- Modal -->
     <div x-show="showModal" 
+         x-cloak
          class="modal" 
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -756,24 +915,31 @@
                 <div class="modal-section">
                     <div class="section-title">Waktu & Lokasi</div>
                     <div class="section-content">
+                        <!-- Date item -->
                         <div class="info-item">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
                             </svg>
                             <span class="break-words overflow-hidden text-ellipsis" x-text="new Date(selectedActivity?.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })"></span>
                         </div>
+                        
+                        <!-- Time item -->
                         <div class="info-item">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                             </svg>
                             <span class="break-words" x-text="selectedActivity?.formatted_time"></span>
                         </div>
+                        
+                        <!-- Location item -->
                         <div class="info-item">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                             </svg>
                             <span class="break-words" x-text="selectedActivity?.location"></span>
                         </div>
+                        
+                        <!-- Category item -->
                         <div class="info-item">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0v3H7V4h6zm-5 7a1 1 0 100-2 1 1 0 000 2zm0 3a1 1 0 100-2 1 1 0 000 2zm5-3a1 1 0 100-2 1 1 0 000 2zm0 3a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
@@ -781,7 +947,7 @@
                             <span class="flex items-center">
                                 <span class="mr-1">Kategori:</span>
                                 <span class="px-2 py-0.5 text-xs rounded-full" 
-                                    :class="selectedActivity?.kategori_kegiatan === 'internal' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'">
+                                      :class="selectedActivity?.kategori_kegiatan === 'internal' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'">
                                     <span x-text="selectedActivity?.kategori_kegiatan === 'internal' ? 'Internal' : 'Eksternal'"></span>
                                 </span>
                             </span>
@@ -805,6 +971,39 @@
                             </svg>
                             Download Surat Tugas
                         </a>
+                    </div>
+                </div>
+                
+                <!-- Add to Calendar -->
+                <div class="modal-section">
+                    <div class="section-title">Tambah ke Kalender</div>
+                    <div class="section-content">
+                        <a :href="'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(selectedActivity?.title) + '&dates=' + selectedActivity?.date.replace(/-/g, '') + 'T' + (selectedActivity?.start_time ? selectedActivity?.start_time.replace(/:/g, '') : '000000') + '/' + selectedActivity?.date.replace(/-/g, '') + 'T' + (selectedActivity?.end_time ? selectedActivity?.end_time.replace(/:/g, '') : '235959') + '&details=' + encodeURIComponent(selectedActivity?.description || '') + '&location=' + encodeURIComponent(selectedActivity?.location || '') + '&sf=true&output=xml'"
+                            target="_blank"
+                            class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            <span class="flex items-center">
+                                <svg class="h-4 w-4 mr-1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a6.033 6.033 0 110-12.064c1.498 0 2.866.549 3.921 1.453l2.814-2.814A9.969 9.969 0 0012.545 2C7.021 2 2.543 6.477 2.543 12s4.478 10 10.002 10c8.396 0 10.249-7.85 9.426-11.748l-9.426-.013z" fill="white"/>
+                                </svg>
+                                + Calendar
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Tambahkan creator info -->
+                <div class="modal-section" x-show="selectedActivity?.creator">
+                    <div class="section-title">Informasi Tambahan</div>
+                    <div class="section-content">
+                        <div class="info-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 card-icon flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="break-words">
+                                <span class="text-gray-600">Dibuat oleh:</span> 
+                                <span class="font-medium" x-text="selectedActivity?.creator?.name"></span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

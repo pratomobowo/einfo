@@ -15,36 +15,36 @@ class TvDisplayController extends Controller
         $category = $request->get('category', 'today'); // today, upcoming, past
         $route = $request->route()->getName();
 
-        $query = Activity::with('official');
+        $query = Activity::with(['official', 'creator']);
 
         // For TV display, we'll show activities differently 
         if ($route === 'tv.index') {
             // For TV display, show today's and upcoming activities, ordered by date
-            $query = Activity::with('official')
+            $query = Activity::with(['official', 'creator'])
                 ->whereDate('date', '>=', Carbon::today())
                 ->orderBy('date')
                 ->orderBy('time')
                 ->limit(50); // Limit to avoid performance issues
         } else {
             // For homepage, apply filters as normal
-            // Filter by position if selected
-            if ($position) {
-                $query->whereHas('official', function($q) use ($position) {
-                    $q->where('position', $position);
-                });
-            }
+        // Filter by position if selected
+        if ($position) {
+            $query->whereHas('official', function($q) use ($position) {
+                $q->where('position', $position);
+            });
+        }
 
-            // Filter by category
-            switch ($category) {
-                case 'today':
-                    $query->whereDate('date', Carbon::today());
-                    break;
-                case 'upcoming':
-                    $query->whereDate('date', '>', Carbon::today());
-                    break;
-                case 'past':
-                    $query->whereDate('date', '<', Carbon::today());
-                    break;
+        // Filter by category
+        switch ($category) {
+            case 'today':
+                $query->whereDate('date', Carbon::today());
+                break;
+            case 'upcoming':
+                $query->whereDate('date', '>', Carbon::today());
+                break;
+            case 'past':
+                $query->whereDate('date', '<', Carbon::today());
+                break;
             }
         }
 

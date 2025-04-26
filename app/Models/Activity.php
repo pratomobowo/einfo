@@ -6,6 +6,7 @@ use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\User;
 
 class Activity extends Model
 {
@@ -33,6 +34,7 @@ class Activity extends Model
         'status',
         'assignment_letter',
         'disposition',
+        'created_by',
     ];
 
     protected $casts = [
@@ -44,6 +46,8 @@ class Activity extends Model
         'formatted_time',
         'formatted_date'
     ];
+    
+    protected $with = ['official', 'creator'];
     
     /**
      * Get the attributes that should be excluded from the activity log.
@@ -66,6 +70,11 @@ class Activity extends Model
     public function originalOfficial()
     {
         return $this->belongsTo(Official::class, 'original_official_id');
+    }
+    
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
     
     // Accessor untuk format tanggal yang konsisten

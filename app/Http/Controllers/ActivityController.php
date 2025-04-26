@@ -65,6 +65,9 @@ class ActivityController extends Controller
 
         // Set default status
         $validated['status'] = 'pending';
+        
+        // Add creator information
+        $validated['created_by'] = auth()->id();
 
         // Handle file upload
         if ($request->hasFile('assignment_letter')) {
