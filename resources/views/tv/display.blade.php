@@ -463,7 +463,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo">
                 <div class="header-title">
                     <h1>JADWAL KEGIATAN REKTOR</h1>
-                    <div class="subtitle">UNIVERSITAS INFORMASI DISPLAY</div>
+                    <div class="subtitle">UNIVERSITAS SANGGA BUANA</div>
                 </div>
             </div>
             <div class="header-right">
