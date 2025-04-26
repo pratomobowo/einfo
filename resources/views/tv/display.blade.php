@@ -121,7 +121,7 @@
         }
 
         .page-title {
-            font-size: 0.875rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text-color);
             display: flex;
@@ -206,7 +206,7 @@
             color: var(--text-muted);
             padding: 0.85rem 1rem;
             text-align: left;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             position: sticky;
             top: 0;
             z-index: 10;
@@ -229,7 +229,7 @@
 
         .activity-table td {
             padding: 0.75rem 1rem;
-            font-size: 0.875rem;
+            font-size: 1rem;
             vertical-align: middle;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-color);
@@ -302,13 +302,13 @@
 
         .category-internal {
             background-color: rgba(139, 92, 246, 0.15);
-            color: var(--internal-color);
+            color: white;
             border: 1px solid rgba(139, 92, 246, 0.25);
         }
 
         .category-external {
             background-color: rgba(245, 158, 11, 0.15);
-            color: var(--external-color);
+            color: white;
             border: 1px solid rgba(245, 158, 11, 0.25);
         }
 
@@ -331,7 +331,7 @@
             flex-shrink: 0;
             padding: 0 2rem;
             font-size: 0.875rem;
-            color: var(--text-muted);
+            color: white;
             position: relative;
         }
 
