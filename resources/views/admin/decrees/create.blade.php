@@ -36,9 +36,23 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                    
+                    <!-- Kategori SK -->
+                    <div>
+                        <label for="category_id" class="block text-sm font-medium text-gray-700">{{ __('Kategori SK') }}</label>
+                        <select id="category_id" name="category_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">{{ __('-- Pilih Kategori --') }}</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
                     <!-- Tentang/Perihal -->
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="tentang" class="block text-sm font-medium text-gray-700">{{ __('Tentang/Perihal') }} <span class="text-red-500">*</span></label>
                         <input id="tentang" type="text" name="tentang" value="{{ old('tentang') }}" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                         @error('tentang')

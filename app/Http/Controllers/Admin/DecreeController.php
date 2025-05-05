@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Decree;
+use App\Models\DecreeCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -18,14 +19,20 @@ class DecreeController extends Controller
         $query = Decree::query();
         
         // Filter berdasarkan jenis_sk jika ada
-        if ($request->has('jenis_sk')) {
+        if ($request->has('jenis_sk') && $request->jenis_sk) {
             $query->where('jenis_sk', $request->jenis_sk);
         }
         
-        $decrees = $query->latest()->paginate(10)->withQueryString();
-        $jenisOptions = Decree::jenisOptions();
+        // Filter berdasarkan kategori jika ada
+        if ($request->has('category_id') && $request->category_id) {
+            $query->where('category_id', $request->category_id);
+        }
         
-        return view('admin.decrees.index', compact('decrees', 'jenisOptions'));
+        $decrees = $query->with('category')->latest()->paginate(10)->withQueryString();
+        $jenisOptions = Decree::jenisOptions();
+        $categories = DecreeCategory::orderBy('name')->get();
+        
+        return view('admin.decrees.index', compact('decrees', 'jenisOptions', 'categories'));
     }
 
     /**
@@ -34,7 +41,8 @@ class DecreeController extends Controller
     public function create()
     {
         $jenisOptions = Decree::jenisOptions();
-        return view('admin.decrees.create', compact('jenisOptions'));
+        $categories = DecreeCategory::orderBy('name')->get();
+        return view('admin.decrees.create', compact('jenisOptions', 'categories'));
     }
 
     /**
@@ -45,6 +53,7 @@ class DecreeController extends Controller
         $validated = $request->validate([
             'nomor_sk' => 'required|string|max:255',
             'jenis_sk' => ['required', Rule::in(array_keys(Decree::jenisOptions()))],
+            'category_id' => 'nullable|exists:decree_categories,id',
             'tentang' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'file_sk' => 'required|file|mimes:pdf|max:10240',
@@ -68,6 +77,7 @@ class DecreeController extends Controller
      */
     public function show(Decree $decree)
     {
+        $decree->load('category');
         return view('admin.decrees.show', compact('decree'));
     }
 
@@ -77,7 +87,8 @@ class DecreeController extends Controller
     public function edit(Decree $decree)
     {
         $jenisOptions = Decree::jenisOptions();
-        return view('admin.decrees.edit', compact('decree', 'jenisOptions'));
+        $categories = DecreeCategory::orderBy('name')->get();
+        return view('admin.decrees.edit', compact('decree', 'jenisOptions', 'categories'));
     }
 
     /**
@@ -94,6 +105,7 @@ class DecreeController extends Controller
         $validated = $request->validate([
             'nomor_sk' => 'required|string|max:255',
             'jenis_sk' => ['required', Rule::in(array_keys(Decree::jenisOptions()))],
+            'category_id' => 'nullable|exists:decree_categories,id',
             'tentang' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'file_sk' => $fileSkRule,

@@ -24,13 +24,45 @@
                             Kegiatan
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.decrees.index') }}" class="{{ request()->routeIs('admin.decrees*') ? 'bg-blue-800 text-white' : 'text-white/90 hover:text-white hover:bg-blue-800/80' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-150">
-                            <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('admin.decrees*') ? 'text-white' : 'text-blue-100 group-hover:text-white' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <li x-data="{ open: {{ request()->routeIs('admin.decrees*') || request()->routeIs('admin.decree-categories*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open" class="{{ (request()->routeIs('admin.decrees*') || request()->routeIs('admin.decree-categories*')) ? 'bg-blue-800 text-white' : 'text-white/90 hover:text-white hover:bg-blue-800/80' }} group flex w-full items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-150">
+                            <svg class="h-6 w-6 shrink-0 {{ (request()->routeIs('admin.decrees*') || request()->routeIs('admin.decree-categories*')) ? 'text-white' : 'text-blue-100 group-hover:text-white' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
                             Surat Keputusan
-                        </a>
+                            <div :class="open ? 'rotate-90 bg-blue-900' : 'bg-blue-700'" class="ml-auto h-5 w-5 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out">
+                                <svg class="h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-200" 
+                             x-transition:enter-start="opacity-0 -translate-y-2" 
+                             x-transition:enter-end="opacity-100 translate-y-0" 
+                             x-transition:leave="transition ease-in duration-150" 
+                             x-transition:leave-start="opacity-100 translate-y-0" 
+                             x-transition:leave-end="opacity-0 -translate-y-2" 
+                             class="mt-1 ml-2 space-y-1 border-l-2 border-blue-500/40 pl-4">
+                            <a href="{{ route('admin.decrees.index') }}" 
+                               class="{{ request()->routeIs('admin.decrees.index') || (request()->routeIs('admin.decrees.*') && !request()->routeIs('admin.decree-categories.*')) ? 'bg-gradient-to-r from-blue-700 to-blue-600 text-white font-medium border-l-4 border-indigo-300 pl-2' : 'text-blue-100 hover:text-white hover:bg-blue-700/50 border-l-4 border-transparent pl-2' }} 
+                               block rounded-r-md py-2 text-sm transition-all duration-150 -ml-1">
+                                <div class="flex items-center">
+                                    <span class="h-1.5 w-1.5 rounded-full {{ request()->routeIs('admin.decrees.index') || (request()->routeIs('admin.decrees.*') && !request()->routeIs('admin.decree-categories.*')) ? 'bg-indigo-300' : 'bg-blue-400' }} mr-2"></span>
+                                    Daftar SK
+                                </div>
+                            </a>
+                            @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdminSekretariat())
+                            <a href="{{ route('admin.decree-categories.index') }}" 
+                               class="{{ request()->routeIs('admin.decree-categories*') ? 'bg-gradient-to-r from-blue-700 to-blue-600 text-white font-medium border-l-4 border-indigo-300 pl-2' : 'text-blue-100 hover:text-white hover:bg-blue-700/50 border-l-4 border-transparent pl-2' }} 
+                               block rounded-r-md py-2 text-sm transition-all duration-150 -ml-1">
+                                <div class="flex items-center">
+                                    <span class="h-1.5 w-1.5 rounded-full {{ request()->routeIs('admin.decree-categories*') ? 'bg-indigo-300' : 'bg-blue-400' }} mr-2"></span>
+                                    Kategori SK
+                                </div>
+                            </a>
+                            @endif
+                        </div>
                     </li>
                     <li>
                         <a href="{{ route('admin.officials') }}" class="text-white hover:bg-blue-600 group flex items-center px-2 py-2 text-base font-medium rounded-md {{ request()->routeIs('admin.officials*') ? 'bg-blue-800' : '' }}">

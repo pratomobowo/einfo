@@ -14,6 +14,7 @@ class Decree extends Model
     protected $fillable = [
         'nomor_sk',
         'jenis_sk',
+        'category_id',
         'tentang',
         'deskripsi',
         'file_sk',
@@ -37,6 +38,14 @@ class Decree extends Model
             self::JENIS_YAYASAN => 'SK Yayasan',
             self::JENIS_REKTORAT => 'SK Rektorat',
         ];
+    }
+
+    /**
+     * Get the category that owns the decree.
+     */
+    public function category()
+    {
+        return $this->belongsTo(DecreeCategory::class, 'category_id');
     }
 
     public function getFormattedTanggalAttribute()

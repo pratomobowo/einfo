@@ -6,6 +6,7 @@ use App\Http\Controllers\OfficialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TvDisplayController;
 use App\Http\Controllers\Admin\DecreeController;
+use App\Http\Controllers\Admin\DecreeCategoryController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,9 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     
     // Resource route untuk decrees (SK)
     Route::resource('decrees', DecreeController::class);
+    
+    // Resource route untuk decree categories (Kategori SK)
+    Route::resource('decree-categories', DecreeCategoryController::class);
 });
 
 // Profile routes

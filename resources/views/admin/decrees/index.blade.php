@@ -7,14 +7,22 @@
             <h1 class="text-2xl font-semibold text-gray-900">{{ __('Daftar Surat Keputusan') }}</h1>
             <p class="mt-2 text-sm text-gray-700">{{ __('Kelola surat keputusan yang telah dikeluarkan') }}</p>
             
-            @if(request()->has('jenis_sk'))
+            @if(request()->has('jenis_sk') || request()->has('category_id'))
             <div class="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                     </svg>
                     <span class="text-sm text-blue-800">
-                        Menampilkan SK dengan jenis: <strong>{{ request('jenis_sk') }}</strong>
+                        @if(request()->has('jenis_sk'))
+                            Menampilkan SK dengan jenis: <strong>{{ request('jenis_sk') }}</strong>
+                        @endif
+                        @if(request()->has('category_id') && request('category_id'))
+                            @if(request()->has('jenis_sk'))
+                                <span class="mx-1">dan</span>
+                            @endif
+                            kategori: <strong>{{ $categories->where('id', request('category_id'))->first()->name ?? 'Tidak diketahui' }}</strong>
+                        @endif
                     </span>
                 </div>
                 <a href="{{ route('admin.decrees.index') }}" class="bg-white hover:bg-blue-50 text-blue-700 text-xs py-1 px-3 rounded border border-blue-300 transition-colors duration-200 flex items-center">
@@ -26,13 +34,22 @@
             </div>
             @else
             <div class="mt-4">
-                <form action="{{ route('admin.decrees.index') }}" method="GET" class="flex items-center space-x-2">
+                <form action="{{ route('admin.decrees.index') }}" method="GET" class="flex flex-wrap items-center space-x-2">
                     <div class="flex items-center">
                         <label for="jenis_sk" class="sr-only">Filter Jenis SK</label>
                         <select name="jenis_sk" id="jenis_sk" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm">
                             <option value="">-- Pilih Jenis SK --</option>
                             @foreach($jenisOptions as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
+                                <option value="{{ $key }}" {{ request('jenis_sk') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex items-center">
+                        <label for="category_id" class="sr-only">Filter Kategori SK</label>
+                        <select name="category_id" id="category_id" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm">
+                            <option value="">-- Pilih Kategori --</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -72,6 +89,9 @@
                                     {{ __('Tipe') }}
                                 </th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                    {{ __('Kategori') }}
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                     {{ __('Tentang/Perihal') }}
                                 </th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -103,6 +123,18 @@
                                         </svg>
                                         {{ $decree->jenis_sk }}
                                     </span>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600 border-b border-gray-200">
+                                    @if($decree->category)
+                                    <span class="px-3 py-1 inline-flex items-center rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                                        </svg>
+                                        {{ $decree->category->name }}
+                                    </span>
+                                    @else
+                                    <span class="text-gray-400 text-xs">{{ __('Tidak ada kategori') }}</span>
+                                    @endif
                                 </td>
                                 <td class="px-3 py-4 text-sm text-gray-600 border-b border-gray-200">
                                     <div class="flex items-center">
