@@ -23,14 +23,14 @@ class AdminController extends Controller
         $todayActivitiesCount = $todayActivities->count();
         
         // Ongoing activities (activities happening today)
-        $ongoingActivities = Activity::with('official')
+        $ongoingActivities = Activity::with(['official', 'creator'])
             ->whereDate('date', $today)
             ->orderBy('time')
             ->take(5)
             ->get();
         
         // Upcoming activities (future activities)
-        $upcomingActivities = Activity::with('official')
+        $upcomingActivities = Activity::with(['official', 'creator'])
             ->whereDate('date', '>', $today)
             ->orderBy('date')
             ->orderBy('time')
@@ -38,7 +38,7 @@ class AdminController extends Controller
             ->get();
         
         // Recent activities (recently added)
-        $recentActivities = Activity::with('official')
+        $recentActivities = Activity::with(['official', 'creator'])
             ->latest('created_at')
             ->take(5)
             ->get();
