@@ -41,6 +41,16 @@ class ActivityLog extends Model
     {
         $modelName = class_basename($this->model_type);
         
+        // Special handling for auth actions
+        if ($this->model_type === 'Auth') {
+            return match($this->action) {
+                'login' => "logged into the system",
+                'logout' => "logged out of the system",
+                default => "performed an authentication action",
+            };
+        }
+        
+        // Regular CRUD actions
         return match($this->action) {
             'create' => "created a new $modelName",
             'update' => "updated a $modelName",

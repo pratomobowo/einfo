@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\ActivityLog;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,19 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+        // Log the login activity
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'login',
+            'model_type' => 'Auth',
+            'model_id' => Auth::id(),
+            'old_values' => null,
+            'new_values' => json_encode(['email' => $request->email]),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->intended(route('admin.dashboard', absolute: false));
     }
 
     /**
@@ -37,6 +50,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Log the logout activity before the user is logged out
+        if (Auth::check()) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'logout',
+                'model_type' => 'Auth',
+                'model_id' => Auth::id(),
+                'old_values' => null,
+                'new_values' => null,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

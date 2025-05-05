@@ -97,11 +97,18 @@ class AdminController extends Controller
      */
     public function users()
     {
-        if (!auth()->user()->isSuperAdmin()) {
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekretariat()) {
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         
-        $users = User::latest()->paginate(10);
+        $query = User::latest();
+        
+        // If admin secretariat, only show non-super admin users
+        if (auth()->user()->isAdminSekretariat()) {
+            $query->where('role', '!=', User::ROLE_SUPER_ADMIN);
+        }
+        
+        $users = $query->paginate(10);
         return view('admin.users.index', compact('users'));
     }
     

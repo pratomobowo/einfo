@@ -82,7 +82,9 @@
                         <select name="role" id="role" required 
                             class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-200 sm:text-sm transition-colors">
                             <option value="">{{ __('Pilih Peran') }}</option>
+                            @if(auth()->user()->isSuperAdmin())
                             <option value="super_admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>{{ __('Super Admin') }}</option>
+                            @endif
                             <option value="admin_sekretariat" {{ old('role') == 'admin_sekretariat' ? 'selected' : '' }}>{{ __('Admin Sekretariat') }}</option>
                         </select>
                     </div>

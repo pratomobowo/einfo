@@ -60,10 +60,13 @@ class ActivityLogController extends Controller
             ->distinct()
             ->pluck('model_type')
             ->map(function ($type) {
-                return class_basename($type);
+                return $type === 'Auth' ? 'Auth' : class_basename($type);
             });
 
-        return view('admin.activity-logs.index', compact('logs', 'modelTypes'));
+        // Get all available actions for filtering
+        $actions = ['create', 'update', 'delete', 'login', 'logout'];
+
+        return view('admin.activity-logs.index', compact('logs', 'modelTypes', 'actions'));
     }
 
     /**

@@ -33,15 +33,41 @@
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                                         {{ $activityLog->action == 'create' ? 'bg-green-100 text-green-800' : '' }}
                                         {{ $activityLog->action == 'update' ? 'bg-blue-100 text-blue-800' : '' }}
-                                        {{ $activityLog->action == 'delete' ? 'bg-red-100 text-red-800' : '' }}">
-                                        {{ $activityLog->action == 'create' ? 'Tambah' : ($activityLog->action == 'update' ? 'Ubah' : 'Hapus') }}
+                                        {{ $activityLog->action == 'delete' ? 'bg-red-100 text-red-800' : '' }}
+                                        {{ $activityLog->action == 'login' ? 'bg-indigo-100 text-indigo-800' : '' }}
+                                        {{ $activityLog->action == 'logout' ? 'bg-purple-100 text-purple-800' : '' }}">
+                                        @switch($activityLog->action)
+                                            @case('create')
+                                                {{ __('Tambah') }}
+                                                @break
+                                            @case('update')
+                                                {{ __('Ubah') }}
+                                                @break
+                                            @case('delete')
+                                                {{ __('Hapus') }}
+                                                @break
+                                            @case('login')
+                                                {{ __('Login') }}
+                                                @break
+                                            @case('logout')
+                                                {{ __('Logout') }}
+                                                @break
+                                            @default
+                                                {{ $activityLog->action }}
+                                        @endswitch
                                     </span>
                                 </div>
                             </div>
                             
                             <div class="col-span-2">
                                 <div class="text-sm font-medium text-gray-500">{{ __('Data') }}</div>
-                                <div class="mt-1 text-gray-900">{{ class_basename($activityLog->model_type) }} #{{ $activityLog->model_id }}</div>
+                                <div class="mt-1 text-gray-900">
+                                    @if($activityLog->model_type === 'Auth')
+                                        {{ __('Authentication') }}
+                                    @else
+                                        {{ class_basename($activityLog->model_type) }} #{{ $activityLog->model_id }}
+                                    @endif
+                                </div>
                             </div>
                             
                             <div class="col-span-2 sm:col-span-1">
@@ -139,6 +165,34 @@
                                 @else
                                     <p class="text-sm text-gray-600 mt-2">{{ __('Tidak ada informasi detail tentang data yang dihapus.') }}</p>
                                 @endif
+                            </div>
+                        @elseif($activityLog->action == 'login')
+                            <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
+                                <h4 class="font-medium text-indigo-800">{{ __('Login ke Sistem') }}</h4>
+                                
+                                @if($activityLog->new_values && !empty($activityLog->new_values))
+                                    <div class="mt-2 space-y-2">
+                                        @php 
+                                            $loginData = is_array($activityLog->new_values) ? $activityLog->new_values : json_decode($activityLog->new_values, true); 
+                                        @endphp
+                                        
+                                        @if(is_array($loginData))
+                                            @foreach($loginData as $key => $value)
+                                                <div class="grid grid-cols-3 text-sm">
+                                                    <div class="font-medium text-gray-600">{{ $key }}</div>
+                                                    <div class="col-span-2 text-indigo-700">{{ $value }}</div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                @else
+                                    <p class="text-sm text-gray-600 mt-2">{{ __('Pengguna berhasil login ke sistem.') }}</p>
+                                @endif
+                            </div>
+                        @elseif($activityLog->action == 'logout')
+                            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                                <h4 class="font-medium text-purple-800">{{ __('Logout dari Sistem') }}</h4>
+                                <p class="text-sm text-gray-600 mt-2">{{ __('Pengguna telah berhasil keluar dari sistem.') }}</p>
                             </div>
                         @endif
                     </div>

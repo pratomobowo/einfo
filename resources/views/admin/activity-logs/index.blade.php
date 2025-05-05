@@ -18,9 +18,29 @@
                             <label for="action" class="block text-sm font-medium text-gray-700">{{ __('Aksi') }}</label>
                             <select id="action" name="action" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 <option value="">{{ __('Semua Aksi') }}</option>
-                                <option value="create" {{ request('action') == 'create' ? 'selected' : '' }}>{{ __('Tambah') }}</option>
-                                <option value="update" {{ request('action') == 'update' ? 'selected' : '' }}>{{ __('Ubah') }}</option>
-                                <option value="delete" {{ request('action') == 'delete' ? 'selected' : '' }}>{{ __('Hapus') }}</option>
+                                @foreach($actions as $actionType)
+                                    <option value="{{ $actionType }}" {{ request('action') == $actionType ? 'selected' : '' }}>
+                                        @switch($actionType)
+                                            @case('create')
+                                                {{ __('Tambah') }}
+                                                @break
+                                            @case('update')
+                                                {{ __('Ubah') }}
+                                                @break
+                                            @case('delete')
+                                                {{ __('Hapus') }}
+                                                @break
+                                            @case('login')
+                                                {{ __('Login') }}
+                                                @break
+                                            @case('logout')
+                                                {{ __('Logout') }}
+                                                @break
+                                            @default
+                                                {{ ucfirst($actionType) }}
+                                        @endswitch
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         
@@ -79,12 +99,36 @@
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                                             {{ $log->action == 'create' ? 'bg-green-100 text-green-800' : '' }}
                                             {{ $log->action == 'update' ? 'bg-blue-100 text-blue-800' : '' }}
-                                            {{ $log->action == 'delete' ? 'bg-red-100 text-red-800' : '' }}">
-                                            {{ $log->action == 'create' ? 'Tambah' : ($log->action == 'update' ? 'Ubah' : 'Hapus') }}
+                                            {{ $log->action == 'delete' ? 'bg-red-100 text-red-800' : '' }}
+                                            {{ $log->action == 'login' ? 'bg-indigo-100 text-indigo-800' : '' }}
+                                            {{ $log->action == 'logout' ? 'bg-purple-100 text-purple-800' : '' }}">
+                                            @switch($log->action)
+                                                @case('create')
+                                                    {{ __('Tambah') }}
+                                                    @break
+                                                @case('update')
+                                                    {{ __('Ubah') }}
+                                                    @break
+                                                @case('delete')
+                                                    {{ __('Hapus') }}
+                                                    @break
+                                                @case('login')
+                                                    {{ __('Login') }}
+                                                    @break
+                                                @case('logout')
+                                                    {{ __('Logout') }}
+                                                    @break
+                                                @default
+                                                    {{ $log->action }}
+                                            @endswitch
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ class_basename($log->model_type) }} #{{ $log->model_id }}
+                                        @if($log->model_type === 'Auth')
+                                            {{ __('Authentication') }}
+                                        @else
+                                            {{ class_basename($log->model_type) }} #{{ $log->model_id }}
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $log->created_at->format('d M Y, H:i:s') }}

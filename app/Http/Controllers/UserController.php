@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -23,12 +24,29 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Check if user is a super admin
-        if (!auth()->user()->isSuperAdmin()) {
+        // Log authentication info for debugging
+        Log::info('User access to index', [
+            'user_id' => auth()->id(),
+            'user_email' => auth()->user()->email,
+            'is_super_admin' => auth()->user()->isSuperAdmin(),
+            'is_admin_secretariat' => auth()->user()->isAdminSekretariat(),
+            'role' => auth()->user()->role
+        ]);
+        
+        // Check if user is a super admin or admin secretariat
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekretariat()) {
+            Log::warning('Access denied to users.index: Not super admin or admin secretariat');
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         
-        $users = User::latest()->paginate(10);
+        $query = User::latest();
+        
+        // If admin secretariat, only show non-super admin users
+        if (auth()->user()->isAdminSekretariat()) {
+            $query->where('role', '!=', User::ROLE_SUPER_ADMIN);
+        }
+        
+        $users = $query->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -37,8 +55,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        // Check if user is a super admin
-        if (!auth()->user()->isSuperAdmin()) {
+        // Check if user is a super admin or admin secretariat
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekretariat()) {
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         
@@ -50,16 +68,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Check if user is a super admin
-        if (!auth()->user()->isSuperAdmin()) {
+        // Check if user is a super admin or admin secretariat
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekretariat()) {
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
+        // Define available roles based on current user role
+        $availableRoles = ['admin_sekretariat'];
+        
+        // Super admin can create any role
+        if (auth()->user()->isSuperAdmin()) {
+            $availableRoles[] = 'super_admin';
         }
         
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', Password::defaults()],
-            'role' => ['required', 'in:super_admin,admin_sekretariat'],
+            'role' => ['required', 'in:' . implode(',', $availableRoles)],
         ]);
 
         $user = User::create([
@@ -79,9 +105,15 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        // Check if user is a super admin
-        if (!auth()->user()->isSuperAdmin()) {
+        // Check if user is a super admin or admin secretariat
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekretariat()) {
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
+        // Admin secretariat cannot edit super admin users
+        if (auth()->user()->isAdminSekretariat() && $user->isSuperAdmin()) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Anda tidak memiliki akses untuk mengubah pengguna Super Admin.');
         }
         
         return view('admin.users.edit', compact('user'));
@@ -92,15 +124,36 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // Check if user is a super admin
-        if (!auth()->user()->isSuperAdmin()) {
+        // Check if user is a super admin or admin secretariat
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekretariat()) {
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
+        // Admin secretariat cannot update super admin users
+        if (auth()->user()->isAdminSekretariat() && $user->isSuperAdmin()) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Anda tidak memiliki akses untuk mengubah pengguna Super Admin.');
+        }
+        
+        // Define available roles based on current user role
+        $availableRoles = ['admin_sekretariat'];
+        
+        // Super admin can create any role and preserve the current role if it's super_admin
+        if (auth()->user()->isSuperAdmin()) {
+            $availableRoles[] = 'super_admin';
+        }
+        
+        // If user being edited is already a super admin, allow preserving that role
+        if ($user->isSuperAdmin() && auth()->user()->isSuperAdmin()) {
+            $roleValidation = ['required', 'in:super_admin,admin_sekretariat'];
+        } else {
+            $roleValidation = ['required', 'in:' . implode(',', $availableRoles)];
         }
         
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role' => ['required', 'in:super_admin,admin_sekretariat'],
+            'role' => $roleValidation,
         ]);
 
         // Update password hanya jika diisi
@@ -114,7 +167,12 @@ class UserController extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->role = $request->role;
+        
+        // Only update role if we have permission to do so
+        if (auth()->user()->isSuperAdmin() || !$user->isSuperAdmin()) {
+            $user->role = $request->role;
+        }
+        
         $user->save();
 
         return redirect()->route('admin.users')
@@ -126,9 +184,15 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Check if user is a super admin
-        if (!auth()->user()->isSuperAdmin()) {
+        // Check if user is a super admin or admin secretariat
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekretariat()) {
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        }
+        
+        // Admin secretariat cannot delete super admin users
+        if (auth()->user()->isAdminSekretariat() && $user->isSuperAdmin()) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Anda tidak memiliki akses untuk menghapus pengguna Super Admin.');
         }
         
         // Mencegah menghapus diri sendiri
