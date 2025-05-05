@@ -176,6 +176,10 @@
             background-color: var(--upcoming-color);
         }
 
+        .dot-completed {
+            background-color: var(--completed-color);
+        }
+
         .dot-internal {
             background-color: var(--internal-color);
         }
@@ -285,6 +289,15 @@
         .status-upcoming::before {
             background-color: var(--upcoming-color);
             box-shadow: 0 0 10px 1px var(--upcoming-color);
+        }
+
+        .status-completed {
+            color: var(--completed-color);
+        }
+
+        .status-completed::before {
+            background-color: var(--completed-color);
+            box-shadow: 0 0 10px 1px var(--completed-color);
         }
 
         .category {
@@ -398,6 +411,21 @@
             animation: highlight 2s;
         }
 
+        /* Completed activity row styling */
+        .completed-activity {
+            background-color: rgba(239, 68, 68, 0.08); /* Light red background with low opacity */
+        }
+
+        /* Make sure the completed activity style gets applied by making it more specific */
+        .activity-table tbody tr.completed-activity {
+            background-color: rgba(239, 68, 68, 0.15); /* Slightly darker red background */
+        }
+        
+        /* Override hover effect for completed activities */
+        .activity-table tbody tr.completed-activity:hover {
+            background-color: rgba(239, 68, 68, 0.2); /* Darker red on hover */
+        }
+
         /* Empty state */
         .empty-state {
             display: flex;
@@ -488,6 +516,10 @@
                 <div class="legend-item">
                     <div class="legend-dot dot-upcoming"></div>
                     <span>AKAN DATANG</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot dot-completed"></div>
+                    <span>SELESAI</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-dot dot-internal"></div>
@@ -582,6 +614,15 @@
                                         $endTime = $activityDate->copy()->addHours(9);    // 9 AM
                                     }
                                     
+                                    // Force endTime to be after startTime
+                                    if ($endTime->lte($startTime)) {
+                                        $endTime = (clone $startTime)->addHour();
+                                    }
+                                    
+                                    // Debug times
+                                    error_log("Activity {$activity->id}: '{$activity->title}' - Date: {$activity->date}, TimeStr: {$timeStr}");
+                                    error_log("Parsed times - StartTime: {$startTime}, EndTime: {$endTime}, Now: {$now}");
+                                    
                                     // Determine status
                                     $status = '';
                                     $statusClass = '';
@@ -620,8 +661,36 @@
                                         
                                         $filteredActivities->push($activity);
                                     } else {
-                                        // Activity has ended
-                                        continue; // Skip past activities
+                                        // Activity has ended - now check how long ago
+                                        // Activity has ended (now > endTime) - activity is in the past
+                                        $status = 'SELESAI';
+                                        $hoursSinceEnd = $now->diffInHours($endTime);
+                                        
+                                        // Ensure hoursSinceEnd is calculated correctly
+                                        if ($now->gt($endTime)) {
+                                            error_log("Activity {$activity->id} has ended. Hours since end: {$hoursSinceEnd}");
+                                        
+                                            if ($hoursSinceEnd >= 1) {
+                                                // More than 1 hour ago - add red highlighting
+                                                $statusClass = 'status-completed';
+                                                $rowClass .= ' completed-activity';
+                                                error_log("COMPLETED: Adding class 'completed-activity' to activity {$activity->id}. Final rowClass: '{$rowClass}'");
+                                            } else {
+                                                // Less than 1 hour ago
+                                                $statusClass = 'status-ongoing';
+                                                error_log("RECENTLY ENDED: Not adding class to activity {$activity->id}");
+                                            }
+                                        } else {
+                                            // This shouldn't happen, but handle it just in case
+                                            $statusClass = 'status-ongoing';
+                                            error_log("UNEXPECTED: Activity {$activity->id} endTime is in the future but wasn't caught by earlier conditions");
+                                        }
+                                        
+                                        // Calculate how long ago the activity ended
+                                        $minutesSinceEnd = $now->diffInMinutes($endTime);
+                                        $countdownText = "({$minutesSinceEnd} Menit Berlalu)";
+                                        
+                                        $filteredActivities->push($activity);
                                     }
                                     
                                     // Determine category
@@ -648,10 +717,16 @@
                                     $filteredActivities->push($activity);
                                 }
                             @endphp
-                            <tr class="{{ $rowClass }}">
+                            @php
+                                $inlineStyle = '';
+                                if (strpos($rowClass, 'completed-activity') !== false) {
+                                    $inlineStyle = 'background-color: rgba(239, 68, 68, 0.15) !important;';
+                                }
+                            @endphp
+                            <tr class="{{ $rowClass }}" style="{{ $inlineStyle }}">
                                 <td class="col-date">{{ $dateFormatted }}</td>
                                 <td class="col-time">{{ $activity->formatted_time }}</td>
-                                <td class="col-title">{{ $activity->title }}</td>
+                                <td class="col-title">{{ $activity->title }} @if(strpos($rowClass, 'completed-activity') !== false)<span style="color: #ef4444; font-size: 0.7rem; margin-left: 5px;">[Completed]</span>@endif</td>
                                 <td class="col-officials">{{ $activity->official->position }}</td>
                                 <td class="col-location">{{ $activity->location }}</td>
                                 <td class="col-status status {{ $statusClass }}">{{ $status }}</td>
@@ -663,7 +738,7 @@
                         
                         @if($filteredActivities->isEmpty())
                             <tr>
-                                <td colspan="7" class="empty-row">TIDAK ADA JADWAL KEGIATAN AKTIF ATAU AKAN DATANG</td>
+                                <td colspan="7" class="empty-row">TIDAK ADA JADWAL KEGIATAN UNTUK HARI INI</td>
                             </tr>
                         @endif
                     </tbody>
@@ -674,13 +749,13 @@
         <!-- Marquee footer -->
         <div class="marquee">
             <div class="marquee-content">
-                @foreach($activities->take(10) as $activity)
+                @foreach($filteredActivities->take(10) as $activity)
                     <div class="marquee-item">
                         {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
                     </div>
                 @endforeach
                 <!-- Duplicate for continuous scroll -->
-                @foreach($activities->take(10) as $activity)
+                @foreach($filteredActivities->take(10) as $activity)
                     <div class="marquee-item">
                         {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
                     </div>
