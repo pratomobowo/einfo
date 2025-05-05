@@ -47,19 +47,19 @@
                         <input type="date" name="date" id="date" class="w-full md:w-auto rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-sm" value="{{ $request->date ?? '' }}">
                     </div>
                     
-                    <div class="w-full md:w-auto">
+                    <div class="md:w-56">
                         <label for="official_id" class="block text-sm font-medium text-gray-700 mb-1">Filter Pejabat</label>
-                        <select id="official_id" name="official_id" class="w-full md:w-auto rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-sm">
+                        <select id="official_id" name="official_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-sm">
                             <option value="">Semua Pejabat</option>
                             @foreach($officials as $official)
                                 <option value="{{ $official->id }}" @selected($request->official_id == $official->id)>
-                                    {{ $official->name }} - {{ $official->position }}
+                                    {{ $official->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                     
-                    <button type="submit" class="h-10 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <button type="submit" class="h-10 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 whitespace-nowrap">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
