@@ -47,8 +47,9 @@ class DecreeController extends Controller
             'jenis_sk' => ['required', Rule::in(array_keys(Decree::jenisOptions()))],
             'tentang' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'file_sk' => 'required|file|mimes:pdf,doc,docx|max:10240',
+            'file_sk' => 'required|file|mimes:pdf|max:10240',
             'tanggal_terbit' => 'required|date',
+            'tanggal_berlaku' => 'required|date',
             'ditandatangani_oleh' => 'required|string|max:255',
         ]);
 
@@ -84,15 +85,28 @@ class DecreeController extends Controller
      */
     public function update(Request $request, Decree $decree)
     {
+        // File SK wajib jika belum ada file dan checkbox 'delete_file' tidak dicentang
+        $fileSkRule = 'mimes:pdf|max:10240';
+        if (!$decree->file_sk || $request->has('delete_file')) {
+            $fileSkRule = 'required|' . $fileSkRule;
+        }
+
         $validated = $request->validate([
             'nomor_sk' => 'required|string|max:255',
             'jenis_sk' => ['required', Rule::in(array_keys(Decree::jenisOptions()))],
             'tentang' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'file_sk' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'file_sk' => $fileSkRule,
             'tanggal_terbit' => 'required|date',
+            'tanggal_berlaku' => 'required|date',
             'ditandatangani_oleh' => 'required|string|max:255',
         ]);
+
+        // Jika checkbox hapus file dicentang
+        if ($request->has('delete_file') && $decree->file_sk) {
+            Storage::disk('public')->delete($decree->file_sk);
+            $validated['file_sk'] = null;
+        }
 
         if ($request->hasFile('file_sk')) {
             // Hapus file lama jika ada

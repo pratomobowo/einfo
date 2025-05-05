@@ -18,11 +18,13 @@ class Decree extends Model
         'deskripsi',
         'file_sk',
         'tanggal_terbit',
+        'tanggal_berlaku',
         'ditandatangani_oleh',
     ];
 
     protected $casts = [
         'tanggal_terbit' => 'date',
+        'tanggal_berlaku' => 'date',
     ];
 
     // Konstanta untuk jenis SK
@@ -40,6 +42,11 @@ class Decree extends Model
     public function getFormattedTanggalAttribute()
     {
         return $this->tanggal_terbit ? Carbon::parse($this->tanggal_terbit)->locale('id')->isoFormat('D MMMM YYYY') : '';
+    }
+    
+    public function getFormattedTanggalBerlakuAttribute()
+    {
+        return $this->tanggal_berlaku ? Carbon::parse($this->tanggal_berlaku)->locale('id')->isoFormat('D MMMM YYYY') : '';
     }
     
     public function isYayasan()

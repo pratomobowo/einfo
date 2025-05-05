@@ -32,7 +32,7 @@
                         {{ $decree->tentang }}
                     </h3>
                     <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                        {{ __('Nomor') }}: {{ $decree->nomor_sk }} &middot; {{ __('Tanggal') }}: {{ $decree->formatted_tanggal }}
+                        {{ __('Nomor') }}: {{ $decree->nomor_sk }} &middot; {{ __('Tanggal Penetapan') }}: {{ $decree->formatted_tanggal }}
                     </p>
                 </div>
                 <div class="border-t border-gray-200">
@@ -63,10 +63,18 @@
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-200">
                             <dt class="text-sm font-medium text-gray-500">
-                                {{ __('Tanggal') }}
+                                {{ __('Tanggal Penetapan') }}
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 {{ $decree->tanggal_terbit->isoFormat('dddd, D MMMM Y') }}
+                            </dd>
+                        </div>
+                        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-200">
+                            <dt class="text-sm font-medium text-gray-500">
+                                {{ __('Tanggal Berlaku') }}
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                {{ $decree->tanggal_berlaku ? $decree->tanggal_berlaku->isoFormat('dddd, D MMMM Y') : __('Tidak ada informasi') }}
                             </dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-200">

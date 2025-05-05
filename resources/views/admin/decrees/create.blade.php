@@ -46,11 +46,20 @@
                         @enderror
                     </div>
 
-                    <!-- Tanggal -->
+                    <!-- Tanggal Penetapan -->
                     <div>
-                        <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700">{{ __('Tanggal') }} <span class="text-red-500">*</span></label>
+                        <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700">{{ __('Tanggal Penetapan') }} <span class="text-red-500">*</span></label>
                         <input id="tanggal_terbit" type="date" name="tanggal_terbit" value="{{ old('tanggal_terbit') }}" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                         @error('tanggal_terbit')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Tanggal Berlaku -->
+                    <div>
+                        <label for="tanggal_berlaku" class="block text-sm font-medium text-gray-700">{{ __('Tanggal Berlaku') }} <span class="text-red-500">*</span></label>
+                        <input id="tanggal_berlaku" type="date" name="tanggal_berlaku" value="{{ old('tanggal_berlaku') }}" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        @error('tanggal_berlaku')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -75,9 +84,9 @@
 
                     <!-- File Upload -->
                     <div class="md:col-span-2">
-                        <label for="file_sk" class="block text-sm font-medium text-gray-700">{{ __('Upload PDF File') }}</label>
+                        <label for="file_sk" class="block text-sm font-medium text-gray-700">{{ __('Upload PDF File') }} <span class="text-red-500">*</span></label>
                         <div class="mt-1 flex items-center">
-                            <input id="file_sk" type="file" name="file_sk" accept="application/pdf" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <input id="file_sk" type="file" name="file_sk" accept="application/pdf" required class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                         </div>
                         <p class="mt-1 text-sm text-gray-500">{{ __('Format file: PDF. Ukuran maksimum: 10MB') }}</p>
                         @error('file_sk')
