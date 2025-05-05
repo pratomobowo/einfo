@@ -13,10 +13,19 @@ class DecreeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $decrees = Decree::latest()->paginate(10);
-        return view('admin.decrees.index', compact('decrees'));
+        $query = Decree::query();
+        
+        // Filter berdasarkan jenis_sk jika ada
+        if ($request->has('jenis_sk')) {
+            $query->where('jenis_sk', $request->jenis_sk);
+        }
+        
+        $decrees = $query->latest()->paginate(10)->withQueryString();
+        $jenisOptions = Decree::jenisOptions();
+        
+        return view('admin.decrees.index', compact('decrees', 'jenisOptions'));
     }
 
     /**

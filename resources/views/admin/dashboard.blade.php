@@ -14,7 +14,7 @@
     <!-- Stats -->
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <!-- Total Activities -->
-        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300">
+        <a href="{{ route('admin.activities') }}" class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300 hover:bg-blue-50 cursor-pointer">
             <dt class="truncate text-sm font-medium text-gray-500 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -22,10 +22,10 @@
                 Total Kegiatan
             </dt>
             <dd class="mt-2 text-3xl font-semibold tracking-tight text-gray-900">{{ $stats['total_activities'] }}</dd>
-        </div>
+        </a>
 
         <!-- Today's Activities -->
-        <div class="overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-5 shadow-md border-l-4 border-blue-600 hover:shadow-lg transition-all duration-300">
+        <a href="{{ route('admin.activities') }}?date={{ now()->format('Y-m-d') }}" class="overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-5 shadow-md border-l-4 border-blue-600 hover:shadow-lg transition-all duration-300 hover:bg-blue-100 cursor-pointer">
             <dt class="truncate text-sm font-medium text-blue-700 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -33,10 +33,10 @@
                 Kegiatan Hari Ini
             </dt>
             <dd class="mt-2 text-3xl font-semibold tracking-tight text-blue-900">{{ $stats['today_activities_count'] }}</dd>
-        </div>
+        </a>
 
         <!-- Total SK Rektorat -->
-        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300">
+        <a href="{{ route('admin.decrees.index') }}?jenis_sk=SK Rektorat" class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300 hover:bg-blue-50 cursor-pointer">
             <dt class="truncate text-sm font-medium text-gray-500 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -44,10 +44,10 @@
                 Total SK Rektorat
             </dt>
             <dd class="mt-2 text-3xl font-semibold tracking-tight text-gray-900">{{ $stats['total_sk_rektorat'] }}</dd>
-        </div>
+        </a>
 
         <!-- Total SK Yayasan -->
-        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300">
+        <a href="{{ route('admin.decrees.index') }}?jenis_sk=SK Yayasan" class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300 hover:bg-blue-50 cursor-pointer">
             <dt class="truncate text-sm font-medium text-gray-500 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -55,7 +55,7 @@
                 Total SK Yayasan   
             </dt>
             <dd class="mt-2 text-3xl font-semibold tracking-tight text-gray-900">{{ $stats['total_sk_yayasan'] }}</dd>
-        </div>
+        </a>
     </div>
 
     <!-- List View -->

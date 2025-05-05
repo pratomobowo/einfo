@@ -64,10 +64,19 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('stats'));
     }
 
-    public function activities()
+    public function activities(Request $request)
     {
-        $activities = Activity::with('official')->latest()->paginate(10);
-        return view('admin.activities.index', compact('activities'));
+        $query = Activity::with('official');
+        
+        // Filter berdasarkan tanggal jika ada
+        if ($request->has('date')) {
+            $query->whereDate('date', $request->date);
+        }
+        
+        $activities = $query->latest()->paginate(10)->withQueryString();
+        $date = $request->date ?? null;
+        
+        return view('admin.activities.index', compact('activities', 'date'));
     }
 
     public function officials()

@@ -6,6 +6,45 @@
         <div class="sm:flex-auto">
             <h1 class="text-2xl font-semibold text-gray-900">{{ __('Daftar Surat Keputusan') }}</h1>
             <p class="mt-2 text-sm text-gray-700">{{ __('Kelola surat keputusan yang telah dikeluarkan') }}</p>
+            
+            @if(request()->has('jenis_sk'))
+            <div class="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                    <span class="text-sm text-blue-800">
+                        Menampilkan SK dengan jenis: <strong>{{ request('jenis_sk') }}</strong>
+                    </span>
+                </div>
+                <a href="{{ route('admin.decrees.index') }}" class="bg-white hover:bg-blue-50 text-blue-700 text-xs py-1 px-3 rounded border border-blue-300 transition-colors duration-200 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Hapus Filter
+                </a>
+            </div>
+            @else
+            <div class="mt-4">
+                <form action="{{ route('admin.decrees.index') }}" method="GET" class="flex items-center space-x-2">
+                    <div class="flex items-center">
+                        <label for="jenis_sk" class="sr-only">Filter Jenis SK</label>
+                        <select name="jenis_sk" id="jenis_sk" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm">
+                            <option value="">-- Pilih Jenis SK --</option>
+                            @foreach($jenisOptions as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        Filter
+                    </button>
+                </form>
+            </div>
+            @endif
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <a href="{{ route('admin.decrees.create') }}" class="block rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm hover:from-blue-700 hover:to-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-300">
