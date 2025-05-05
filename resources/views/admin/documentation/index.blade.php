@@ -22,10 +22,19 @@
                         <a href="#surat-keputusan" class="text-gray-500 hover:text-blue-600 font-medium pb-4 hover:border-b-2 hover:border-blue-600">Surat Keputusan</a>
                     </li>
                     <li>
+                        <a href="#kategori-sk" class="text-gray-500 hover:text-blue-600 font-medium pb-4 hover:border-b-2 hover:border-blue-600">Kategori SK</a>
+                    </li>
+                    <li>
                         <a href="#rektor" class="text-gray-500 hover:text-blue-600 font-medium pb-4 hover:border-b-2 hover:border-blue-600">Rektor</a>
                     </li>
                     <li>
                         <a href="#pengguna" class="text-gray-500 hover:text-blue-600 font-medium pb-4 hover:border-b-2 hover:border-blue-600">Pengguna</a>
+                    </li>
+                    <li>
+                        <a href="#aktivitas" class="text-gray-500 hover:text-blue-600 font-medium pb-4 hover:border-b-2 hover:border-blue-600">Log Aktivitas</a>
+                    </li>
+                    <li>
+                        <a href="#tv-display" class="text-gray-500 hover:text-blue-600 font-medium pb-4 hover:border-b-2 hover:border-blue-600">TV Display</a>
                     </li>
                 </ul>
             </nav>
@@ -101,6 +110,34 @@
                             </div>
                             <p class="text-gray-600 mt-2">
                                 Mengelola akses pengguna dan administrator sistem.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-500 rounded-md p-2">
+                                    <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                                    </svg>
+                                </div>
+                                <h5 class="text-md font-semibold text-gray-900 ml-3">Log Aktivitas</h5>
+                            </div>
+                            <p class="text-gray-600 mt-2">
+                                Mencatat dan memonitor aktivitas pengguna pada sistem, termasuk login dan logout.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-500 rounded-md p-2">
+                                    <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                                    </svg>
+                                </div>
+                                <h5 class="text-md font-semibold text-gray-900 ml-3">Kategori SK</h5>
+                            </div>
+                            <p class="text-gray-600 mt-2">
+                                Mengelola kategori-kategori untuk Surat Keputusan untuk organisasi yang lebih baik.
                             </p>
                         </div>
                     </div>
@@ -302,7 +339,7 @@
                                 <li><strong>Nama:</strong> Nama lengkap pengguna</li>
                                 <li><strong>Email:</strong> Alamat email pengguna (digunakan untuk login)</li>
                                 <li><strong>Password:</strong> Kata sandi untuk akun pengguna</li>
-                                <li><strong>Peran:</strong> Admin atau Pengguna biasa</li>
+                                <li><strong>Peran:</strong> Super Admin, Admin Sekretariat, atau Pengguna biasa</li>
                             </ul>
                         </div>
                     </div>
@@ -314,11 +351,191 @@
                             Mengelola Akses Pengguna
                         </h4>
                         <p class="text-gray-700">
-                            Anda dapat mengedit peran pengguna atau menonaktifkan akun pengguna jika diperlukan. Pengguna dengan peran admin memiliki akses penuh ke seluruh fitur sistem.
+                            Anda dapat mengedit peran pengguna atau menonaktifkan akun pengguna jika diperlukan. Setiap peran memiliki akses yang berbeda dalam sistem.
                         </p>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-3">
+                            <h5 class="font-medium text-gray-900">Peran Pengguna dan Hak Akses:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                <li><strong>Super Admin:</strong> Memiliki akses penuh ke seluruh fitur sistem, termasuk mengelola semua pengguna lain</li>
+                                <li><strong>Admin Sekretariat:</strong> Dapat mengelola kegiatan, SK, dan pengguna biasa, namun tidak dapat mengelola Super Admin</li>
+                                <li><strong>Pengguna:</strong> Memiliki akses terbatas sesuai dengan izin yang diberikan</li>
+                            </ul>
+                        </div>
                         <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                             <p class="text-sm text-yellow-800">
                                 <span class="font-semibold">Perhatian:</span> Berhati-hatilah dalam memberikan akses admin. Pastikan hanya pengguna yang berwenang yang memiliki peran admin.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Decree Categories Section -->
+            <section id="kategori-sk" class="space-y-4 pt-6 border-t border-gray-200">
+                <h3 class="text-2xl font-bold text-gray-900">Pengelolaan Kategori Surat Keputusan</h3>
+                
+                <div class="space-y-8">
+                    <!-- View Categories -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">1</span>
+                            Melihat Daftar Kategori SK
+                        </h4>
+                        <p class="text-gray-700">
+                            Daftar kategori SK dapat diakses melalui menu <strong>Kategori SK</strong> pada sidebar. Pada halaman ini, Anda dapat melihat semua kategori SK yang telah dibuat dalam sistem.
+                        </p>
+                    </div>
+                    
+                    <!-- Add New Category -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">2</span>
+                            Menambahkan Kategori SK Baru
+                        </h4>
+                        <p class="text-gray-700">
+                            Untuk menambahkan kategori SK baru, klik tombol <strong>Tambah Kategori</strong> pada halaman daftar kategori. Isi formulir dengan informasi yang diperlukan.
+                        </p>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-3">
+                            <h5 class="font-medium text-gray-900">Formulir Kategori SK terdiri dari:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                <li><strong>Nama Kategori:</strong> Nama untuk kategori SK</li>
+                                <li><strong>Deskripsi:</strong> Penjelasan singkat tentang kategori (opsional)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Manage Categories -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">3</span>
+                            Mengelola Kategori SK
+                        </h4>
+                        <p class="text-gray-700">
+                            Anda dapat mengedit atau menghapus kategori SK yang ada. Saat membuat atau mengedit SK, Anda dapat memilih kategori yang sesuai dari daftar yang tersedia.
+                        </p>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-600">
+                                <span class="font-semibold text-blue-600">Tips:</span> Mengorganisir SK dalam kategori memudahkan pencarian dan pengelolaan SK, terutama ketika jumlah SK semakin banyak.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Activity Log Section -->
+            <section id="aktivitas" class="space-y-4 pt-6 border-t border-gray-200">
+                <h3 class="text-2xl font-bold text-gray-900">Log Aktivitas Pengguna</h3>
+                
+                <div class="space-y-8">
+                    <!-- View Activity Logs -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">1</span>
+                            Melihat Log Aktivitas
+                        </h4>
+                        <p class="text-gray-700">
+                            Log aktivitas pengguna dapat diakses melalui menu <strong>Log Aktivitas</strong> pada sidebar. Pada halaman ini, Anda dapat melihat semua aktivitas yang dilakukan pengguna dalam sistem, termasuk login dan logout.
+                        </p>
+                    </div>
+                    
+                    <!-- Log Information -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">2</span>
+                            Informasi dalam Log Aktivitas
+                        </h4>
+                        <p class="text-gray-700">
+                            Log aktivitas memberikan informasi detail tentang aktivitas pengguna yang dilakukan dalam sistem.
+                        </p>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-3">
+                            <h5 class="font-medium text-gray-900">Informasi yang tersedia dalam log aktivitas meliputi:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                <li><strong>Waktu:</strong> Tanggal dan waktu aktivitas dilakukan</li>
+                                <li><strong>Pengguna:</strong> Nama pengguna yang melakukan aktivitas</li>
+                                <li><strong>Jenis Aktivitas:</strong> Jenis tindakan yang dilakukan (login, logout, membuat, mengedit, menghapus)</li>
+                                <li><strong>Modul:</strong> Bagian sistem tempat aktivitas dilakukan</li>
+                                <li><strong>Detail:</strong> Informasi tambahan tentang aktivitas</li>
+                                <li><strong>IP Address:</strong> Alamat IP perangkat yang digunakan</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Using Activity Logs -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">3</span>
+                            Manfaat Log Aktivitas
+                        </h4>
+                        <p class="text-gray-700">
+                            Log aktivitas berguna untuk audit, pemecahan masalah, dan memantau aktivitas pengguna dalam sistem.
+                        </p>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-600">
+                                <span class="font-semibold text-blue-600">Tips:</span> Gunakan filter dan pencarian untuk menemukan aktivitas spesifik berdasarkan pengguna, jenis aktivitas, atau waktu tertentu.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- TV Display Section -->
+            <section id="tv-display" class="space-y-4 pt-6 border-t border-gray-200">
+                <h3 class="text-2xl font-bold text-gray-900">Tampilan TV (TV Display)</h3>
+                
+                <div class="space-y-8">
+                    <!-- About TV Display -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">1</span>
+                            Tentang Tampilan TV
+                        </h4>
+                        <p class="text-gray-700">
+                            Tampilan TV adalah halaman khusus yang dirancang untuk ditampilkan pada layar TV atau monitor besar untuk menunjukkan jadwal kegiatan hari ini. Halaman ini dapat diakses melalui URL <strong>/tv</strong>.
+                        </p>
+                    </div>
+                    
+                    <!-- TV Display Features -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">2</span>
+                            Fitur Tampilan TV
+                        </h4>
+                        <p class="text-gray-700">
+                            Tampilan TV menyajikan informasi kegiatan dengan cara yang optimal untuk dilihat dari jarak jauh.
+                        </p>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-3">
+                            <h5 class="font-medium text-gray-900">Fitur utama tampilan TV meliputi:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                <li><strong>Tampilan Waktu:</strong> Menampilkan waktu dan tanggal saat ini</li>
+                                <li><strong>Daftar Kegiatan:</strong> Menampilkan semua kegiatan untuk hari ini</li>
+                                <li><strong>Indikator Status:</strong> Menunjukkan status kegiatan (berlangsung, akan datang, selesai)</li>
+                                <li><strong>Latar Merah:</strong> Kegiatan yang telah lewat lebih dari 1 jam ditandai dengan latar belakang merah</li>
+                                <li><strong>Running Text:</strong> Informasi kegiatan berjalan di bagian bawah layar</li>
+                                <li><strong>Auto-Refresh:</strong> Halaman akan diperbarui secara otomatis setiap 5 menit</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Using TV Display -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-2">3</span>
+                            Menggunakan Tampilan TV
+                        </h4>
+                        <p class="text-gray-700">
+                            Untuk menggunakan tampilan TV secara optimal, ikuti langkah-langkah berikut:
+                        </p>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-3">
+                            <ol class="list-decimal list-inside text-gray-700 space-y-2">
+                                <li>Buka browser pada komputer yang terhubung dengan TV atau monitor</li>
+                                <li>Akses URL <strong>[domain]/tv</strong></li>
+                                <li>Atur browser ke mode fullscreen (biasanya dengan menekan tombol F11)</li>
+                                <li>Pastikan komputer tetap menyala dan terhubung ke internet</li>
+                            </ol>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-600">
+                                <span class="font-semibold text-blue-600">Tips:</span> Untuk tampilan optimal, gunakan monitor dengan resolusi minimal 1080p. Tampilan TV dirancang responsif dan akan menyesuaikan dengan ukuran layar.
                             </p>
                         </div>
                     </div>
