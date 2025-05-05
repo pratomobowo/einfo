@@ -7,39 +7,96 @@
             <h1 class="text-2xl font-semibold text-gray-900">Kegiatan</h1>
             <p class="mt-2 text-sm text-gray-700">Daftar semua kegiatan yang telah ditambahkan.</p>
             
-            @if(isset($date))
-            <div class="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                    </svg>
-                    <span class="text-sm text-blue-800">
-                        Menampilkan kegiatan pada tanggal: <strong>{{ \Carbon\Carbon::parse($date)->format('d F Y') }}</strong>
-                    </span>
-                </div>
-                <a href="{{ route('admin.activities') }}" class="bg-white hover:bg-blue-50 text-blue-700 text-xs py-1 px-3 rounded border border-blue-300 transition-colors duration-200 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Hapus Filter
-                </a>
-            </div>
-            @else
-            <div class="mt-4">
-                <form action="{{ route('admin.activities') }}" method="GET" class="flex items-center space-x-2">
+            <!-- Filter Status Indicators -->
+            <div class="mt-4 space-y-3">
+                @if($request->has('date') && $request->date)
+                <div class="p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between">
                     <div class="flex items-center">
-                        <label for="date" class="sr-only">Filter Tanggal</label>
-                        <input type="date" name="date" id="date" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm" value="{{ date('Y-m-d') }}">
-                    </div>
-                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        Filter
-                    </button>
+                        <span class="text-sm text-blue-800">
+                            Menampilkan kegiatan pada tanggal: <strong>{{ \Carbon\Carbon::parse($request->date)->format('d F Y') }}</strong>
+                        </span>
+                    </div>
+                    <a href="{{ route('admin.activities', array_merge(request()->except('date'), ['page' => 1])) }}" class="bg-white hover:bg-blue-50 text-blue-700 text-xs py-1 px-3 rounded border border-blue-300 transition-colors duration-200 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Hapus Filter Tanggal
+                    </a>
+                </div>
+                @endif
+                
+                @if($request->has('official_id') && $request->official_id)
+                <div class="p-3 bg-green-50 border border-green-100 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span class="text-sm text-green-800">
+                            Menampilkan kegiatan untuk pejabat: 
+                            <strong>
+                                @foreach($officials as $official)
+                                    @if($official->id == $request->official_id)
+                                        {{ $official->name }}
+                                    @endif
+                                @endforeach
+                            </strong>
+                        </span>
+                    </div>
+                    <a href="{{ route('admin.activities', array_merge(request()->except('official_id'), ['page' => 1])) }}" class="bg-white hover:bg-green-50 text-green-700 text-xs py-1 px-3 rounded border border-green-300 transition-colors duration-200 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Hapus Filter Pejabat
+                    </a>
+                </div>
+                @endif
+            </div>
+            
+            <!-- Filter Form -->
+            <div class="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <form action="{{ route('admin.activities') }}" method="GET" class="md:flex md:items-end md:space-x-4 space-y-3 md:space-y-0">
+                    <!-- Filter by Date -->
+                    <div class="flex-1">
+                        <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Filter Tanggal</label>
+                        <input type="date" name="date" id="date" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-sm" value="{{ $request->date ?? '' }}">
+                    </div>
+                    
+                    <!-- Filter by Official -->
+                    <div class="flex-1">
+                        <label for="official_id" class="block text-sm font-medium text-gray-700 mb-1">Filter Pejabat</label>
+                        <select id="official_id" name="official_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 text-sm">
+                            <option value="">Semua Pejabat</option>
+                            @foreach($officials as $official)
+                                <option value="{{ $official->id }}" @selected($request->official_id == $official->id)>
+                                    {{ $official->name }} - {{ $official->position }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Filter Button -->
+                    <div class="flex space-x-2">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                            Terapkan Filter
+                        </button>
+                        
+                        @if($request->has('date') || $request->has('official_id'))
+                        <a href="{{ route('admin.activities') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Reset
+                        </a>
+                        @endif
+                    </div>
                 </form>
             </div>
-            @endif
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <a href="{{ route('admin.activities.create') }}" class="block rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm hover:from-blue-700 hover:to-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-300">
@@ -72,7 +129,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($activities as $activity)
+                            @forelse($activities as $activity)
                             <tr class="{{ $loop->even ? 'bg-gray-50' : 'bg-white' }} hover:bg-blue-50 transition-colors duration-150">
                                 <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 border-b border-gray-200">
                                     <div class="line-clamp-2 max-w-xs" title="{{ $activity->title }}">
@@ -150,7 +207,19 @@
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-10 text-center text-gray-500 border-b border-gray-200">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                        <p class="text-base font-medium text-gray-500">Tidak ada data kegiatan</p>
+                                        <p class="text-sm text-gray-400 mt-1">Belum ada kegiatan yang ditambahkan atau tidak ada data yang sesuai dengan filter</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

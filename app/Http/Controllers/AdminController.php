@@ -66,17 +66,24 @@ class AdminController extends Controller
 
     public function activities(Request $request)
     {
-        $query = Activity::with('official');
+        $query = Activity::with(['official', 'creator']);
+        
+        // Filter berdasarkan pejabat jika ada
+        if ($request->has('official_id') && $request->official_id) {
+            $query->where('official_id', $request->official_id);
+        }
         
         // Filter berdasarkan tanggal jika ada
-        if ($request->has('date')) {
+        if ($request->has('date') && $request->date) {
             $query->whereDate('date', $request->date);
         }
         
         $activities = $query->latest()->paginate(10)->withQueryString();
-        $date = $request->date ?? null;
         
-        return view('admin.activities.index', compact('activities', 'date'));
+        // Ambil semua pejabat untuk dropdown filter
+        $officials = Official::orderBy('name')->get();
+        
+        return view('admin.activities.index', compact('activities', 'officials', 'request'));
     }
 
     public function officials()
