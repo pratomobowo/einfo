@@ -59,7 +59,7 @@ class ActivityController extends Controller
             'time' => 'required',
             'location' => 'required|string|max:255',
             'kategori_kegiatan' => 'required|in:internal,eksternal',
-            'assignment_letter' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'assignment_letter' => 'required|file|mimes:pdf,doc,docx|max:10240',
             'disposition' => 'nullable|string',
         ]);
 
@@ -116,6 +116,9 @@ class ActivityController extends Controller
         \Log::info('Request time value: ' . $request->time);
         \Log::info('Original activity time: ' . $activity->time);
         
+        // Validasi assignment_letter - required jika tidak ada file sebelumnya
+        $assignmentLetterRule = $activity->assignment_letter ? 'nullable' : 'required';
+        
         $validated = $request->validate([
             'official_id' => 'required|exists:officials,id',
             'original_official_id' => 'nullable|exists:officials,id',
@@ -125,7 +128,7 @@ class ActivityController extends Controller
             'time' => 'required',
             'location' => 'required|string|max:255',
             'kategori_kegiatan' => 'required|in:internal,eksternal',
-            'assignment_letter' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'assignment_letter' => $assignmentLetterRule . '|file|mimes:pdf,doc,docx|max:10240',
             'disposition' => 'nullable|string',
         ]);
         
@@ -168,7 +171,7 @@ class ActivityController extends Controller
     public function downloadAssignmentLetter(Activity $activity)
     {
         if (!$activity->assignment_letter) {
-            return back()->with('error', 'Surat tugas tidak tersedia.');
+            return back()->with('error', 'Surat Undangan/Tugas tidak tersedia.');
         }
 
         $path = storage_path('app/public/assignment_letters/' . $activity->assignment_letter);
@@ -194,9 +197,9 @@ class ActivityController extends Controller
             // Update database
             $activity->update(['assignment_letter' => null]);
             
-            return redirect()->back()->with('success', 'File surat tugas berhasil dihapus.');
+            return redirect()->back()->with('success', 'File surat undangan/tugas berhasil dihapus.');
         }
         
-        return redirect()->back()->with('error', 'Tidak ada file surat tugas untuk dihapus.');
+        return redirect()->back()->with('error', 'Tidak ada file surat undangan/tugas untuk dihapus.');
     }
 }

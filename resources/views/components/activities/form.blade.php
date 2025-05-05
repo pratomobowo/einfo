@@ -157,7 +157,7 @@
 
         <!-- Assignment Letter Upload -->
         <div class="md:col-span-2">
-            <label for="assignment_letter" class="block text-sm font-medium text-gray-700 mb-1">Surat Tugas</label>
+            <label for="assignment_letter" class="block text-sm font-medium text-gray-700 mb-1">Surat Undangan/Tugas <span class="text-red-500">*</span></label>
             <div class="mt-1 flex items-center">
                 <div class="flex-grow">
                     <input type="file" name="assignment_letter" id="assignment_letter" accept=".pdf,.doc,.docx" 
@@ -200,7 +200,7 @@
                 </div>
             @endif
             
-            <p class="mt-1 text-xs text-gray-500">Upload file surat tugas (PDF, DOC, DOCX, maks. 10MB)</p>
+            <p class="mt-1 text-xs text-gray-500">Upload file surat undangan/tugas (PDF, DOC, DOCX, maks. 10MB). Field ini wajib diisi.</p>
             @error('assignment_letter')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
