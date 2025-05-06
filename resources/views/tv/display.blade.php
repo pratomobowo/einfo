@@ -534,6 +534,11 @@
 
         <!-- Main activity table -->
         <div class="activity-table-container">
+            @php
+                // Initialize filtered activities collection
+                $filteredActivities = collect();
+            @endphp
+            
             @if($activities->isEmpty())
                 <div class="empty-state">
                     <i class="ri-calendar-event-line"></i>
@@ -554,10 +559,6 @@
                         </tr>
                     </thead>
                     <tbody id="activity-table-body">
-                        @php
-                            $filteredActivities = collect();
-                        @endphp
-                        
                         @foreach($activities as $activity)
                             @php
                                 try {
@@ -749,17 +750,26 @@
         <!-- Marquee footer -->
         <div class="marquee">
             <div class="marquee-content">
-                @foreach($filteredActivities->take(10) as $activity)
+                @if($filteredActivities->isNotEmpty())
+                    @foreach($filteredActivities->take(10) as $activity)
+                        <div class="marquee-item">
+                            {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
+                        </div>
+                    @endforeach
+                    <!-- Duplicate for continuous scroll -->
+                    @foreach($filteredActivities->take(10) as $activity)
+                        <div class="marquee-item">
+                            {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
+                        </div>
+                    @endforeach
+                @else
                     <div class="marquee-item">
-                        {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
+                        Tidak ada jadwal kegiatan untuk hari ini
                     </div>
-                @endforeach
-                <!-- Duplicate for continuous scroll -->
-                @foreach($filteredActivities->take(10) as $activity)
                     <div class="marquee-item">
-                        {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
+                        Tidak ada jadwal kegiatan untuk hari ini
                     </div>
-                @endforeach
+                @endif
             </div>
         </div>
     </div>
