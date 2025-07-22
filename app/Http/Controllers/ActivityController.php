@@ -52,6 +52,8 @@ class ActivityController extends Controller
         }
         $validated = $request->validate([
             'official_id' => 'required|exists:officials,id',
+            'official_ids' => 'required|array|min:1',
+            'official_ids.*' => 'exists:officials,id',
             'original_official_id' => 'nullable|exists:officials,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -77,7 +79,10 @@ class ActivityController extends Controller
             $validated['assignment_letter'] = $filename;
         }
 
-        Activity::create($validated);
+        $activity = Activity::create($validated);
+        
+        // Sync the selected officials
+        $activity->officials()->sync($request->official_ids);
 
         return redirect()->route('admin.activities')
             ->with('success', 'Kegiatan berhasil ditambahkan');
@@ -121,6 +126,8 @@ class ActivityController extends Controller
         
         $validated = $request->validate([
             'official_id' => 'required|exists:officials,id',
+            'official_ids' => 'required|array|min:1',
+            'official_ids.*' => 'exists:officials,id',
             'original_official_id' => 'nullable|exists:officials,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -148,6 +155,9 @@ class ActivityController extends Controller
         }
 
         $activity->update($validated);
+        
+        // Sync the selected officials
+        $activity->officials()->sync($request->official_ids);
 
         return redirect()->route('admin.activities')
             ->with('success', 'Kegiatan berhasil diperbarui');

@@ -728,7 +728,17 @@
                                 <td class="col-date">{{ $dateFormatted }}</td>
                                 <td class="col-time">{{ $activity->formatted_time }}</td>
                                 <td class="col-title">{{ $activity->title }} @if(strpos($rowClass, 'completed-activity') !== false)<span style="color: #ef4444; font-size: 0.7rem; margin-left: 5px;">[Completed]</span>@endif</td>
-                                <td class="col-officials">{{ $activity->official->position }}</td>
+                                <td class="col-officials">
+                                    @if($activity->officials && $activity->officials->count() > 0)
+                                        @if($activity->officials->count() <= 2)
+                                            {{ $activity->officials->pluck('position')->join(', ') }}
+                                        @else
+                                            {{ $activity->officials->take(2)->pluck('position')->join(', ') }} +{{ $activity->officials->count() - 2 }} lainnya
+                                        @endif
+                                    @else
+                                        {{ $activity->official->position ?? 'N/A' }}
+                                    @endif
+                                </td>
                                 <td class="col-location">{{ $activity->location }}</td>
                                 <td class="col-status status {{ $statusClass }}">{{ $status }}</td>
                                 <td class="col-category">
@@ -753,13 +763,33 @@
                 @if($filteredActivities->isNotEmpty())
                     @foreach($filteredActivities->take(10) as $activity)
                         <div class="marquee-item">
-                            {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
+                            {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | 
+                            @if($activity->officials && $activity->officials->count() > 0)
+                                @if($activity->officials->count() <= 2)
+                                    {{ $activity->officials->pluck('position')->join(', ') }}
+                                @else
+                                    {{ $activity->officials->take(2)->pluck('position')->join(', ') }} +{{ $activity->officials->count() - 2 }} lainnya
+                                @endif
+                            @else
+                                {{ $activity->official->position ?? 'N/A' }}
+                            @endif
+                            : {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
                         </div>
                     @endforeach
                     <!-- Duplicate for continuous scroll -->
                     @foreach($filteredActivities->take(10) as $activity)
                         <div class="marquee-item">
-                            {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | {{ $activity->official->position }}: {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
+                            {{ \Carbon\Carbon::parse($activity->date)->format('d/m/Y') }} | 
+                            @if($activity->officials && $activity->officials->count() > 0)
+                                @if($activity->officials->count() <= 2)
+                                    {{ $activity->officials->pluck('position')->join(', ') }}
+                                @else
+                                    {{ $activity->officials->take(2)->pluck('position')->join(', ') }} +{{ $activity->officials->count() - 2 }} lainnya
+                                @endif
+                            @else
+                                {{ $activity->official->position ?? 'N/A' }}
+                            @endif
+                            : {{ $activity->title }} - {{ $activity->formatted_time }} @ {{ $activity->location }}
                         </div>
                     @endforeach
                 @else
@@ -841,4 +871,4 @@
         }, 300000);
     </script>
 </body>
-</html> 
+</html>

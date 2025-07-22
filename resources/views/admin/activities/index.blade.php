@@ -107,14 +107,37 @@
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600 border-b border-gray-200">
-                                    <div class="flex items-center">
-                                        <span class="h-7 w-7 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 mr-2 font-semibold text-xs flex-shrink-0">
-                                            {{ substr($activity->official->name, 0, 1) }}
-                                        </span>
-                                        <span class="line-clamp-1 max-w-[180px]" title="{{ $activity->official->name }} - {{ $activity->official->position }}">
-                                            {{ $activity->official->name }} - {{ $activity->official->position }}
-                                        </span>
-                                    </div>
+                                    @if($activity->officials->count() > 0)
+                                        <div class="flex flex-wrap gap-1">
+                                            @foreach($activity->officials->take(2) as $official)
+                                                <div class="flex items-center bg-indigo-50 rounded-full px-2 py-1">
+                                                    <span class="h-5 w-5 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 mr-1 font-semibold text-xs flex-shrink-0">
+                                                        {{ substr($official->name, 0, 1) }}
+                                                    </span>
+                                                    <span class="text-xs text-indigo-800 truncate max-w-[100px]" title="{{ $official->name }} - {{ $official->position }}">
+                                                        {{ $official->name }}
+                                                    </span>
+                                                </div>
+                                            @endforeach
+                                            @if($activity->officials->count() > 2)
+                                                <span class="text-xs text-gray-500 bg-gray-100 rounded-full px-2 py-1">
+                                                    +{{ $activity->officials->count() - 2 }} lainnya
+                                                </span>
+                                            @endif
+                                        </div>
+                                    @elseif($activity->official)
+                                        <!-- Fallback untuk data lama -->
+                                        <div class="flex items-center">
+                                            <span class="h-7 w-7 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 mr-2 font-semibold text-xs flex-shrink-0">
+                                                {{ substr($activity->official->name, 0, 1) }}
+                                            </span>
+                                            <span class="line-clamp-1 max-w-[180px]" title="{{ $activity->official->name }} - {{ $activity->official->position }}">
+                                                {{ $activity->official->name }} - {{ $activity->official->position }}
+                                            </span>
+                                        </div>
+                                    @else
+                                        <span class="text-gray-400 text-xs">Tidak ada pejabat</span>
+                                    @endif
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600 border-b border-gray-200">
                                     <div class="flex items-center">
@@ -201,4 +224,4 @@
         {{ $activities->links() }}
     </div>
 </div>
-@endsection 
+@endsection

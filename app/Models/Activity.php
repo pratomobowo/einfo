@@ -72,6 +72,11 @@ class Activity extends Model
         return $this->belongsTo(Official::class, 'original_official_id');
     }
     
+    public function officials()
+    {
+        return $this->belongsToMany(Official::class, 'activity_officials');
+    }
+    
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');

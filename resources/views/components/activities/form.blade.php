@@ -4,25 +4,58 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Pejabat -->
         <div class="md:col-span-2">
-            <label for="official_id" class="block text-sm font-medium text-gray-700 mb-1">Rektor <span class="text-red-500">*</span></label>
-            <div class="relative">
-                <select id="official_id" name="official_id" class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                    <option value="">Pilih Rektor</option>
+            <label class="block text-sm font-medium text-gray-700 mb-3">Rektor <span class="text-red-500">*</span></label>
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div class="space-y-3">
+                    @php
+                        $selectedOfficials = [];
+                        if (old('official_ids')) {
+                            $selectedOfficials = old('official_ids');
+                        } elseif ($activity && $activity->officials->count() > 0) {
+                            $selectedOfficials = $activity->officials->pluck('id')->toArray();
+                        } elseif ($activity && $activity->official_id) {
+                            $selectedOfficials = [$activity->official_id];
+                        }
+                    @endphp
+                    
                     @foreach($officials as $official)
-                        <option value="{{ $official->id }}" @selected(old('official_id', $activity->official_id ?? '') == $official->id)>
-                            {{ $official->name }} ({{ $official->position }})
-                        </option>
+                        <div class="flex items-center">
+                            <input 
+                                id="official_{{ $official->id }}" 
+                                name="official_ids[]" 
+                                type="checkbox" 
+                                value="{{ $official->id }}"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                {{ in_array($official->id, $selectedOfficials) ? 'checked' : '' }}
+                            >
+                            <label for="official_{{ $official->id }}" class="ml-3 text-sm font-medium text-gray-700">
+                                {{ $official->name }} 
+                                <span class="text-gray-500">({{ $official->position }})</span>
+                            </label>
+                        </div>
                     @endforeach
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-gray-200">
+                    <div class="flex space-x-3">
+                        <button type="button" onclick="selectAllOfficials()" class="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">
+                            Pilih Semua
+                        </button>
+                        <button type="button" onclick="deselectAllOfficials()" class="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                            Hapus Semua
+                        </button>
+                    </div>
                 </div>
             </div>
-            @error('official_id')
+            @error('official_ids')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
+            @error('official_ids.*')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+            
+            <!-- Hidden field for backward compatibility -->
+            <input type="hidden" name="official_id" id="primary_official_id" value="{{ old('official_id', $activity->official_id ?? '') }}">
         </div>
 
         <!-- Disposisi Text -->
@@ -206,4 +239,45 @@
             @enderror
         </div>
     </div>
-</div> 
+</div>
+
+<script>
+function selectAllOfficials() {
+    const checkboxes = document.querySelectorAll('input[name="official_ids[]"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    updatePrimaryOfficial();
+}
+
+function deselectAllOfficials() {
+    const checkboxes = document.querySelectorAll('input[name="official_ids[]"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updatePrimaryOfficial();
+}
+
+function updatePrimaryOfficial() {
+    const checkboxes = document.querySelectorAll('input[name="official_ids[]"]:checked');
+    const primaryOfficialField = document.getElementById('primary_official_id');
+    
+    if (checkboxes.length > 0) {
+        // Set the first checked official as primary for backward compatibility
+        primaryOfficialField.value = checkboxes[0].value;
+    } else {
+        primaryOfficialField.value = '';
+    }
+}
+
+// Add event listeners to update primary official when checkboxes change
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('input[name="official_ids[]"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updatePrimaryOfficial);
+    });
+    
+    // Initialize primary official on page load
+    updatePrimaryOfficial();
+});
+</script>

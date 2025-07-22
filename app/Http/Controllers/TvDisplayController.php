@@ -15,13 +15,13 @@ class TvDisplayController extends Controller
         $category = $request->get('category', 'today'); // today, upcoming, past
         $route = $request->route()->getName();
 
-        $query = Activity::with(['official', 'creator']);
+        $query = Activity::with(['official', 'officials', 'creator']);
 
         // For TV display, we'll show activities differently 
         if ($route === 'tv.index') {
             // For TV display, show today's activities (including past ones)
             // Get all activities for today
-            $query = Activity::with(['official', 'creator'])
+            $query = Activity::with(['official', 'officials', 'creator'])
                 ->whereDate('date', Carbon::today());
                 
             // We'll sort the collection later, after parsing the times
@@ -88,8 +88,12 @@ class TvDisplayController extends Controller
             // For homepage, apply filters as normal
             // Filter by position if selected
             if ($position) {
-                $query->whereHas('official', function($q) use ($position) {
-                    $q->where('position', $position);
+                $query->where(function($q) use ($position) {
+                    $q->whereHas('official', function($subQ) use ($position) {
+                        $subQ->where('position', $position);
+                    })->orWhereHas('officials', function($subQ) use ($position) {
+                        $subQ->where('position', $position);
+                    });
                 });
             }
 
@@ -137,8 +141,12 @@ class TvDisplayController extends Controller
         $query = Activity::query();
 
         if ($position) {
-            $query->whereHas('official', function($q) use ($position) {
-                $q->where('position', $position);
+            $query->where(function($q) use ($position) {
+                $q->whereHas('official', function($subQ) use ($position) {
+                    $subQ->where('position', $position);
+                })->orWhereHas('officials', function($subQ) use ($position) {
+                    $subQ->where('position', $position);
+                });
             });
         }
 
@@ -156,4 +164,4 @@ class TvDisplayController extends Controller
 
         return $query->count();
     }
-} 
+}

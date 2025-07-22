@@ -741,7 +741,21 @@
             <div class="card">
                 <div class="card-content">
                     <h3 class="card-title">{{ $activity->title }}</h3>
-                    <p class="card-subtitle">{{ $activity->official->name }} ({{ $activity->official->position }})</p>
+                    <p class="card-subtitle">
+                        @if($activity->officials && $activity->officials->count() > 0)
+                            @if($activity->officials->count() == 1)
+                                {{ $activity->officials->first()->name }} ({{ $activity->officials->first()->position }})
+                            @elseif($activity->officials->count() == 2)
+                                {{ $activity->officials->first()->name }}, {{ $activity->officials->last()->name }}
+                            @else
+                                {{ $activity->officials->first()->name }}, {{ $activity->officials->skip(1)->first()->name }} +{{ $activity->officials->count() - 2 }} lainnya
+                            @endif
+                        @elseif($activity->official)
+                            {{ $activity->official->name }} ({{ $activity->official->position }})
+                        @else
+                            Tidak ada pejabat terkait
+                        @endif
+                    </p>
                     
                     <div class="date-time-container">
                         <div class="card-date">
@@ -905,10 +919,27 @@
             
             <div class="modal-body">
                 <div class="modal-section">
-                    <div class="section-title">Rektor</div>
+                    <div class="section-title">Pejabat Terkait</div>
                     <div class="section-content">
-                        <div class="overflow-hidden text-ellipsis" x-text="selectedActivity?.official.name"></div>
-                        <div class="overflow-hidden text-ellipsis" x-text="selectedActivity?.official.position"></div>
+                        <template x-if="selectedActivity?.officials && selectedActivity?.officials.length > 0">
+                            <div>
+                                <template x-for="official in selectedActivity.officials" :key="official.id">
+                                    <div class="mb-2 p-2 bg-gray-50 rounded">
+                                        <div class="font-medium" x-text="official.name"></div>
+                                        <div class="text-sm text-gray-600" x-text="official.position"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <template x-if="selectedActivity?.official && (!selectedActivity?.officials || selectedActivity?.officials.length === 0)">
+                            <div>
+                                <div class="overflow-hidden text-ellipsis" x-text="selectedActivity?.official.name"></div>
+                                <div class="overflow-hidden text-ellipsis" x-text="selectedActivity?.official.position"></div>
+                            </div>
+                        </template>
+                        <template x-if="(!selectedActivity?.officials || selectedActivity?.officials.length === 0) && !selectedActivity?.official">
+                            <div class="text-gray-500">Tidak ada pejabat terkait</div>
+                        </template>
                     </div>
                 </div>
                 
@@ -1044,4 +1075,4 @@
         }
     </script>
 </body>
-</html> 
+</html>

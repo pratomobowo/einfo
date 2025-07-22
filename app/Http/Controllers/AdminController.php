@@ -23,14 +23,14 @@ class AdminController extends Controller
         $todayActivitiesCount = $todayActivities->count();
         
         // Ongoing activities (activities happening today)
-        $ongoingActivities = Activity::with(['official', 'creator'])
+        $ongoingActivities = Activity::with(['official', 'officials', 'creator'])
             ->whereDate('date', $today)
             ->orderBy('time')
             ->take(5)
             ->get();
         
         // Upcoming activities (future activities)
-        $upcomingActivities = Activity::with(['official', 'creator'])
+        $upcomingActivities = Activity::with(['official', 'officials', 'creator'])
             ->whereDate('date', '>', $today)
             ->orderBy('date')
             ->orderBy('time')
@@ -38,7 +38,7 @@ class AdminController extends Controller
             ->get();
         
         // Recent activities (recently added)
-        $recentActivities = Activity::with(['official', 'creator'])
+        $recentActivities = Activity::with(['official', 'officials', 'creator'])
             ->latest('created_at')
             ->take(5)
             ->get();
@@ -66,11 +66,16 @@ class AdminController extends Controller
 
     public function activities(Request $request)
     {
-        $query = Activity::with(['official', 'creator']);
+        $query = Activity::with(['official', 'officials', 'creator']);
         
         // Filter berdasarkan pejabat jika ada
         if ($request->has('official_id') && $request->official_id) {
-            $query->where('official_id', $request->official_id);
+            $query->where(function($q) use ($request) {
+                $q->where('official_id', $request->official_id)
+                  ->orWhereHas('officials', function($subQ) use ($request) {
+                      $subQ->where('officials.id', $request->official_id);
+                  });
+            });
         }
         
         // Filter berdasarkan tanggal jika ada
@@ -120,6 +125,8 @@ class AdminController extends Controller
     
     public function editActivity(Activity $activity)
     {
+        // Load officials relationship untuk activity
+        $activity->load('officials');
         $officials = Official::all();
         return view('admin.activities.edit', compact('activity', 'officials'));
     }
@@ -128,4 +135,4 @@ class AdminController extends Controller
     {
         return view('admin.documentation.index');
     }
-} 
+}
